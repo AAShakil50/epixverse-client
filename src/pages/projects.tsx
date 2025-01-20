@@ -27,9 +27,7 @@ const ProjectsPage = () => {
     return (
         <main className="flex flex-col flex-grow h-full">
             <div className="flex flex-row flex-grow h-full">
-                <SideNav title="Projects">
-                    No Content
-                </SideNav>
+                <SideNav></SideNav>
                 <div className="m-8 flex flex-col gap-4 h-full">
                     {
                         data.projects.map(
