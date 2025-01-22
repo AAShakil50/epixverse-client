@@ -10,6 +10,11 @@
                 "id": "8hg9f8h9g8h9g8h9g8h",
                 "title": "The Last",
                 "description": "A story of the last human"
+            },
+            {
+                "id": "g9h8g9h8g9h8g9h8g9h8",
+                "title": "Hollow Space",
+                "description": "A story of the space"
             }
         ],
     "books": [
@@ -24,6 +29,24 @@
             "title": "The tide",
             "description": "The night is dark and should not persist",
             "projectID": "g43fgb39ef84398bref"
+        },
+        {
+            "id": "g9h8g9h8g9h8g9h8g9h8",
+            "title": "The fall",
+            "description": "The fall is inevitable",
+            "projectID": "g43fgb39ef84398bref"
+        },
+        {
+            "id": "asf9g8h9g8h9g8h9g8h9",
+            "title": "Milkiway",
+            "description": "The galaxy of the milkyway",
+            "projectID": "g9h8g9h8g9h8g9h8g9h8"
+        },
+        {
+            "id": "ug7gwi4hrohfi4h8f4h8",
+            "title": "Apocalypse",
+            "description": "The end of the world",
+            "projectID": "8hg9f8h9g8h9g8h9g8h"
         }
     ],
     "chapters": [
@@ -50,6 +73,14 @@
             "description": "Loss of one, gain of another",
             "projectID": "g43fgb39ef84398bref",
             "bookID": "g4554ng9n4g9n4g9n4g9"
+        },
+        {
+            "id": "pr45sdasf9g8h9g8h9",
+            "title": "Good bye, Earth",
+            "index": 1,
+            "description": "It's time for a new beginning",
+            "projectID": "g9h8g9h8g9h8g9h8g9h8",
+            "bookID": "asf9g8h9g8h9g8h9g8h9"
         }
     ],
     "scenes": [

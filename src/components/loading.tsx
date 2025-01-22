@@ -1,8 +1,8 @@
-import { IconLoader } from "@tabler/icons-react";
+import { Loader } from "lucide-react";
 
 const LoadingComponent = () => {
     return <center className={`flex m-auto`}>
-        <IconLoader size={48} />
+        <Loader size={48} />
         <div className={`text-2xl`}>Loading ...</div>
     </center>;
 };

@@ -1,4 +1,4 @@
-import { IconChevronsDown } from "@tabler/icons-react"
+import { ChevronsDown } from "lucide-react"
 import { useState } from "react"
 
 type ExpandableProps = {
@@ -16,7 +16,7 @@ const Expandable = ({ title, description, children }: ExpandableProps) => {
                 <h2 className="josefin-sans text-2xl font-bold inline">{title}</h2>
                 <span className="kanit-400 ml-2 text-gray-500 tracking-tighter">{description}</span>
             </div>
-            <IconChevronsDown
+            <ChevronsDown
                 role="button"
                 size={24}
                 onClick={() => setExpand(!expand)}

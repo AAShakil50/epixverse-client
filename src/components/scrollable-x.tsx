@@ -1,4 +1,4 @@
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRef } from "react";
 
 type ScrollableXProps = {
@@ -15,13 +15,13 @@ const ScrollableX = ({ children }: ScrollableXProps) => {
     const scrollContainer = useRef<HTMLDivElement>(null);
 
     return <div className={`flex flex-row gap-2 place-items-center`}>
-        <IconArrowLeft onClick={
+        <ArrowLeft onClick={
             () => scrollContainer.current && scrollDiv(scrollContainer.current, 'left')
         } />
         <div ref={scrollContainer} className={`overflow-x-hidden rounded-lg scroll-x scroll-smooth`}>
             {children}
         </div>
-        <IconArrowRight
+        <ArrowRight
             onClick={() => scrollContainer.current && scrollDiv(scrollContainer.current, 'right')}
         />
     </div>
