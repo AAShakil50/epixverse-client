@@ -1,6 +1,5 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
-import { Book, ChevronsDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from "./ui/sidebar";
+import { ChevronsDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
@@ -8,6 +7,7 @@ import useSwr from "swr";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "@/lib/site.configs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 // type SideNavProps = {
 //     title: string,
@@ -32,7 +32,7 @@ const SideNav = () => {
     const [selected, setSelected] = useState<_ProjectsSkeleton | null>(null);
 
     useEffect(() => {
-        if(data && data.length > 0)
+        if (data && data.length > 0)
             setSelected(data[0]);
     }, [data])
 
@@ -80,21 +80,51 @@ const SideNav = () => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarGroup>
-                <SidebarGroupLabel>Chapters</SidebarGroupLabel>
-                <SidebarGroupContent>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link to="#">
-                                <Book size={24} />
-                                <span>Thirst</span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarGroupContent>
-            </SidebarGroup>
+            <SidebarMenuItem>
+                <_SideNavElements
+                    title="Books"
+                    items={["Ignition", "Extinguish"]} />
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+                <_SideNavElements
+                    title="Chapters"
+                    items={["Thirst", "Wave"]} />
+            </SidebarMenuItem>
         </SidebarContent>
     </Sidebar>
+}
+
+type _SideNavElementsTypes = {
+    title: string,
+    items: string[]
+}
+
+const _SideNavElements = ({ title, items }: _SideNavElementsTypes) => {
+    return <Collapsible defaultOpen className="group/collapsible w-full">
+        <CollapsibleTrigger asChild>
+            <SidebarMenuButton className="pl-4">
+                {title}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto">
+                    <ChevronsDown />
+                </Button>
+            </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+            <SidebarMenuSub>
+                {items.map((item) =>
+                    <SidebarMenuSubItem className="text-sm">
+                        <SidebarMenuSubButton
+                            size="md">
+                            {item}
+                        </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                )}
+            </SidebarMenuSub>
+        </CollapsibleContent>
+    </Collapsible>
 }
 
 export default SideNav;
