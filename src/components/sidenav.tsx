@@ -9,6 +9,7 @@ import { useProjects } from "@/hooks/use-projects";
 import { Skeleton } from "./ui/skeleton";
 import { useBooks } from "@/hooks/use-books";
 import { Badge } from "./ui/badge";
+import { useChapters } from "@/hooks/use-chapters";
 
 // type SideNavProps = {
 //     title: string,
@@ -103,6 +104,36 @@ const SideNavBooks = ({ projectID }: SideNavBooksType) => {
                     key={book.id}
                     title={book.title}
                     isActive={book.id === activeBook} />
+            )}
+        </SideNavElements>
+    </SidebarMenuItem>
+}
+
+type SideNavChaptersType = {
+    bookID: string
+}
+
+const SideNavChapters = ({ bookID }: SideNavChaptersType) => {
+    const { chapters, activeChapter, isLoading, error } = useChapters(bookID);
+
+    if (isLoading) return <SidebarMenuItem>
+        <Skeleton className="w-full rounded-full" />
+    </SidebarMenuItem>
+
+    if (error || !chapters)
+        return <SidebarMenuItem>
+            No Chapters
+        </SidebarMenuItem>
+
+    return <SidebarMenuItem>
+        <SideNavElements
+            title="Chapters"
+            itemCount={chapters.length}>
+            {chapters.map((chapter) =>
+                <SideBarNavSubElement
+                    key={chapter.id}
+                    title={chapter.title}
+                    isActive={chapter.id === activeChapter} />
             )}
         </SideNavElements>
     </SidebarMenuItem>
