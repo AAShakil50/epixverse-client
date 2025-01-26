@@ -4,7 +4,7 @@ import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
 import { Project } from "@/types/project";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import useSwr  from "swr" 
+import useSwr from "swr"
 
 /**
  * Custom hook to manage and fetch projects.
@@ -22,12 +22,14 @@ export function useProjects() {
     const [projects, setProjects] = useRecoilState(projectsAtom);
     const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
 
-    const { data: projectsData, isLoading, error } = useSwr<Project[]>(
-        !projects ? `${API_URL}/projects` : null, fetcher,
-        {
-            fallbackData: [],
-        }
-    );
+    const { data: projectsData, isLoading, error } = useSwr<Project[]>
+        (
+            `${API_URL}/projects`,
+            fetcher,
+            {
+                fallbackData: [],
+            }
+        );
 
     useEffect(() => {
         if (projectsData && projectsData.length > 0) {
@@ -45,5 +47,5 @@ export function useProjects() {
         setActiveProject: setActiveProject,
         isLoading,
         error
-      };
+    };
 }
