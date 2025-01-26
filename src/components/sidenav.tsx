@@ -6,13 +6,8 @@ import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from ".
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { useProjects } from "@/hooks/use-projects";
-import useSWR from "swr";
-import { API_URL } from "@/lib/site.configs";
-import { fetcher } from "@/lib/fetcher";
-import { useRecoilState } from "recoil";
-import { booksAtom } from "@/recoil/atoms/atom-books";
-import { Book } from "@/types/book";
 import { Skeleton } from "./ui/skeleton";
+import { useBooks } from "@/hooks/use-books";
 
 // type SideNavProps = {
 //     title: string,
@@ -78,11 +73,6 @@ const SideNav = () => {
                 </SidebarMenu>
             </SidebarHeader>
             {activeProject && <SideNavBooks projectID={activeProject} />}
-            <SidebarMenuItem>
-                <SideNavElements
-                    title="Chapters"
-                    items={["Thirst", "Wave"]} />
-            </SidebarMenuItem>
         </SidebarContent>
     </Sidebar>
 }
@@ -92,40 +82,36 @@ type SideNavBooksType = {
 }
 
 const SideNavBooks = ({ projectID }: SideNavBooksType) => {
-    const [books, setBooks] = useRecoilState(booksAtom)
-
-    const booksApiUrl = `${API_URL}/books?projectID=${projectID}`;
-    const { data: booksData, isLoading, error } = useSWR<Book[]>(!books ? booksApiUrl : null,
-        fetcher, {
-        fallbackData: [],
-        onSuccess(data) {
-            if (data) setBooks({ books: data });
-        },
-    }
-    );
+    const { books, activeBook, isLoading, error } = useBooks(projectID);
 
     if (isLoading) return <SidebarMenuItem>
         <Skeleton className="w-full rounded-full" />
     </SidebarMenuItem>
 
-    if (error || !booksData || !books)
+    if (error || !books)
         return <SidebarMenuItem>
             No Books
         </SidebarMenuItem>
 
     return <SidebarMenuItem>
         <SideNavElements
-            title="Books"
-            items={books.books.map(book => book.title)} />
+            title="Books">
+            {books.map((book) =>
+                <SideBarNavSubElement
+                    key={book.id}
+                    title={book.title}
+                    isActive={book.id === activeBook} />
+            )}
+        </SideNavElements>
     </SidebarMenuItem>
 }
 
 type SideNavElementsTypes = {
     title: string,
-    items: string[]
+    children: React.ReactNode
 }
 
-const SideNavElements = ({ title, items }: SideNavElementsTypes) => {
+const SideNavElements = ({ title, children }: SideNavElementsTypes) => {
     return <Collapsible defaultOpen className="group/collapsible w-full">
         <CollapsibleTrigger asChild>
             <SidebarMenuButton className="pl-4">
@@ -140,19 +126,27 @@ const SideNavElements = ({ title, items }: SideNavElementsTypes) => {
         </CollapsibleTrigger>
         <CollapsibleContent>
             <SidebarMenuSub>
-                {items.map((item) =>
-                    <SidebarMenuSubItem
-                        key={item}
-                        className="text-sm">
-                        <SidebarMenuSubButton
-                            size="md">
-                            {item}
-                        </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                )}
+                {children}
             </SidebarMenuSub>
         </CollapsibleContent>
     </Collapsible>
+}
+
+type SideBarNavSubElementType = {
+    title: string,
+    isActive: boolean
+}
+
+const SideBarNavSubElement = ({ title, isActive }: SideBarNavSubElementType) => {
+    return <SidebarMenuSubItem
+        key={title}
+        className="text-sm">
+        <SidebarMenuSubButton
+            isActive={isActive}
+            size="md">
+            {title}
+        </SidebarMenuSubButton>
+    </SidebarMenuSubItem>
 }
 
 export default SideNav;
