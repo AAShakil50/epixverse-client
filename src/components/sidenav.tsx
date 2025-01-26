@@ -8,37 +8,42 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "@/lib/site.configs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
+import { useRecoilState } from "recoil";
+import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
+import { Project } from "@/types/project";
 
 // type SideNavProps = {
 //     title: string,
 //     children: ReactNode
 // };
 
-interface _ProjectsSkeleton {
-    id: string,
-    title: string,
-    description: string
-}
-
 const projectFetcher = async (url: string) => {
-    const response = await axios.get<_ProjectsSkeleton[]>(url);
+    const response = await axios.get<Project[]>(url);
     return response.data;
 }
 
 const SideNav = () => {
-    const { data, error, isLoading } = useSwr<_ProjectsSkeleton[]>(
-        `${API_URL}/projects`, projectFetcher);
+    const [projects, setProjects] = useRecoilState(projectsAtom);
+    const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
 
-    const [selected, setSelected] = useState<_ProjectsSkeleton | null>(null);
+    const [openPopup, setOpenPopup] = useState(false);
+
+    const { data: projectsData, isLoading } = useSwr<Project[]>(
+        !projects ? `${API_URL}/projects` : null, projectFetcher,
+        {
+            fallbackData: [],
+        }
+    );
 
     useEffect(() => {
-        if (data && data.length > 0)
-            setSelected(data[0]);
-    }, [data])
+        if (projectsData && projectsData.length > 0) {
+            setProjects({
+                projects: projectsData
+            })
 
-    const buttonText = isLoading ?
-        "Loading Projects..." : error ?
-            "Error Loading..." : "Select";
+            if (!activeProject) setActiveProject(projectsData[0].id)
+        }
+    }, [activeProject, projectsData, setActiveProject, setProjects])
 
 
     return <Sidebar>
@@ -46,28 +51,41 @@ const SideNav = () => {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <Popover>
+                        <Popover open={openPopup}>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded="true"
-                                    className="w-full justify-between text-sm">
-                                    {selected ? selected.title : buttonText}
+                                    className="w-full justify-between text-sm"
+                                    onClick={() => setOpenPopup(!openPopup)}>
+                                    {isLoading ? "Loading Projects" :
+                                        (projects && activeProject ?
+                                            projects.projects.find((project) => project.id === activeProject)?.title :
+                                            "No Project")
+                                    }
                                     <ChevronsDown />
                                 </Button>
                             </PopoverTrigger>
-                            {data &&
+                            {projects &&
                                 <PopoverContent
                                     className="p-0 ml-2">
                                     <Command>
                                         <CommandInput placeholder="Select a project..." />
                                         <CommandList>
                                             <CommandGroup>
-                                                {data.map((project) => {
+                                                {projects.projects.map((project) => {
                                                     return <CommandItem
                                                         key={project.id}
-                                                        value={project.title}>
+                                                        value={project.title}
+                                                        className={`${activeProject === project.id &&
+                                                            'italic font-bold'}`}
+                                                        onSelect={
+                                                            () => {
+                                                                setActiveProject(project.id);
+                                                                setOpenPopup(false);
+                                                            }
+                                                        }>
                                                         {project.title}
                                                     </CommandItem>
                                                 })}
