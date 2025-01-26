@@ -3,47 +3,19 @@ import { ChevronsDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
-import useSwr from "swr";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { API_URL } from "@/lib/site.configs";
+import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { useRecoilState } from "recoil";
-import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
-import { Project } from "@/types/project";
+import { useProjects } from "@/hooks/use-projects";
 
 // type SideNavProps = {
 //     title: string,
 //     children: ReactNode
 // };
 
-const projectFetcher = async (url: string) => {
-    const response = await axios.get<Project[]>(url);
-    return response.data;
-}
-
 const SideNav = () => {
-    const [projects, setProjects] = useRecoilState(projectsAtom);
-    const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
-
     const [openPopup, setOpenPopup] = useState(false);
 
-    const { data: projectsData, isLoading } = useSwr<Project[]>(
-        !projects ? `${API_URL}/projects` : null, projectFetcher,
-        {
-            fallbackData: [],
-        }
-    );
-
-    useEffect(() => {
-        if (projectsData && projectsData.length > 0) {
-            setProjects({
-                projects: projectsData
-            })
-
-            if (!activeProject) setActiveProject(projectsData[0].id)
-        }
-    }, [activeProject, projectsData, setActiveProject, setProjects])
+    const { projects, activeProject, setActiveProject, isLoading } = useProjects();
 
 
     return <Sidebar>
@@ -61,7 +33,7 @@ const SideNav = () => {
                                     onClick={() => setOpenPopup(!openPopup)}>
                                     {isLoading ? "Loading Projects" :
                                         (projects && activeProject ?
-                                            projects.projects.find((project) => project.id === activeProject)?.title :
+                                            projects.find((project) => project.id === activeProject)?.title :
                                             "No Project")
                                     }
                                     <ChevronsDown />
@@ -74,7 +46,7 @@ const SideNav = () => {
                                         <CommandInput placeholder="Select a project..." />
                                         <CommandList>
                                             <CommandGroup>
-                                                {projects.projects.map((project) => {
+                                                {projects.map((project) => {
                                                     return <CommandItem
                                                         key={project.id}
                                                         value={project.title}
