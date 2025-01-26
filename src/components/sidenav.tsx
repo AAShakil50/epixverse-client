@@ -26,7 +26,7 @@ const SideNav = () => {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <Popover open={openPopup}>
+                        <Popover open={openPopup} onOpenChange={setOpenPopup}>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
