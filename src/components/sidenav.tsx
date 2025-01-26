@@ -8,6 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collap
 import { useProjects } from "@/hooks/use-projects";
 import { Skeleton } from "./ui/skeleton";
 import { useBooks } from "@/hooks/use-books";
+import { Badge } from "./ui/badge";
 
 // type SideNavProps = {
 //     title: string,
@@ -95,7 +96,8 @@ const SideNavBooks = ({ projectID }: SideNavBooksType) => {
 
     return <SidebarMenuItem>
         <SideNavElements
-            title="Books">
+            title="Books"
+            itemCount={books.length}>
             {books.map((book) =>
                 <SideBarNavSubElement
                     key={book.id}
@@ -108,18 +110,29 @@ const SideNavBooks = ({ projectID }: SideNavBooksType) => {
 
 type SideNavElementsTypes = {
     title: string,
+    itemCount?: number
     children: React.ReactNode
 }
 
-const SideNavElements = ({ title, children }: SideNavElementsTypes) => {
-    return <Collapsible defaultOpen className="group/collapsible w-full">
+const SideNavElements = ({ title, itemCount, children }: SideNavElementsTypes) => {
+    const [open, setOpen] = useState(false);
+
+    return <Collapsible
+        defaultOpen
+        open={open}
+        onOpenChange={setOpen}
+        className="group/collapsible w-full">
         <CollapsibleTrigger asChild>
             <SidebarMenuButton className="pl-4">
                 {title}
+                {itemCount && <Badge
+                    variant="outline">
+                    {itemCount}
+                </Badge>}
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="ml-auto">
+                    className={`ml-auto transition-transform ${open && '-rotate-180'}`}>
                     <ChevronsDown />
                 </Button>
             </SidebarMenuButton>
