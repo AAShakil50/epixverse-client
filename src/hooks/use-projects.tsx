@@ -1,15 +1,10 @@
+import { fetcher } from "@/lib/fetcher";
 import { API_URL } from "@/lib/site.configs";
 import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
 import { Project } from "@/types/project";
-import axios from "axios";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import useSwr  from "swr" 
-
-const projectFetcher = async (url: string) => {
-    const response = await axios.get<Project[]>(url);
-    return response.data;
-}
 
 /**
  * Custom hook to manage and fetch projects.
@@ -28,7 +23,7 @@ export function useProjects() {
     const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
 
     const { data: projectsData, isLoading, error } = useSwr<Project[]>(
-        !projects ? `${API_URL}/projects` : null, projectFetcher,
+        !projects ? `${API_URL}/projects` : null, fetcher,
         {
             fallbackData: [],
         }
