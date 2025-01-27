@@ -13,6 +13,8 @@ import { useChapters } from "@/hooks/use-chapters";
 import { useRecoilState } from "recoil";
 import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
 import { activeBookAtom } from "@/recoil/atoms/atom-books";
+import { useScenes } from "@/hooks/use-scenes";
+import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
 
 // type SideNavProps = {
 //     title: string,
@@ -80,6 +82,7 @@ const SideNav = () => {
             {activeProject && <>
                 <SideNavBooks />
                 <SideNavChapters />
+                <SideNavScenes />
             </>}
         </SidebarContent>
     </Sidebar>
@@ -111,6 +114,25 @@ const SideNavChapters = () => {
         error={error}
         subElements={chapters}
         activeElement={activeChapter}
+    />
+}
+
+const SideNavScenes = () => {
+    const [activeChapter] = useRecoilState(activeChapterAtom);
+
+    const { scenes, activeScene, isLoading, error } = useScenes(activeChapter);
+
+    return <SideNavSubElements
+        title="Scenes"
+        isLoading={isLoading}
+        error={error}
+        subElements={scenes?.map(
+            scene => ({
+                id: scene.id,
+                title: scene.title ? scene.title : `Scene ${scene.index}`
+            })
+        )}
+        activeElement={activeScene}
     />
 }
 

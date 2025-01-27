@@ -5,13 +5,13 @@ import { Scene } from "@/types/scene";
 import { useRecoilState } from "recoil";
 import useSWR from "swr";
 
-export function useScenes( bookID : string | null) {
+export function useScenes( chapterID : string | null) {
     const [scenes, setScenes] = useRecoilState(scenesAtom)
     const [activeScene, setActiveScene] = useRecoilState(activeSceneAtom)
 
-    const scenesApiUrl = `${API_URL}/scenes?chapterID=${bookID}`;
+    const scenesApiUrl = `${API_URL}/scenes?chapterID=${chapterID}`;
     const { isLoading, error } = useSWR<Scene[]>(
-        bookID ? scenesApiUrl : null,
+        chapterID ? scenesApiUrl : null,
         fetcher, {
         fallbackData: [],
         onSuccess(scenesData) {
