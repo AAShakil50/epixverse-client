@@ -159,7 +159,7 @@ const SideNavElements = ({ title, itemCount, children }: SideNavElementsTypes) =
         <CollapsibleTrigger asChild>
             <SidebarMenuButton className="pl-4">
                 {title}
-                {itemCount && <Badge
+                {itemCount !== undefined && <Badge
                     variant="outline">
                     {itemCount}
                 </Badge>}
