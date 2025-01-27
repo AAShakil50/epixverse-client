@@ -12,6 +12,7 @@ import { Badge } from "./ui/badge";
 import { useChapters } from "@/hooks/use-chapters";
 import { useRecoilState } from "recoil";
 import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
+import { activeBookAtom } from "@/recoil/atoms/atom-books";
 
 // type SideNavProps = {
 //     title: string,
@@ -76,13 +77,16 @@ const SideNav = () => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            {activeProject && <SideNavBooks />}
+            {activeProject && <>
+                <SideNavBooks />
+                <SideNavChapters />    
+            </>}
         </SidebarContent>
     </Sidebar>
 }
 
 const SideNavBooks = () => {
-    const [ activeProject ] = useRecoilState(activeProjectAtom);
+    const [activeProject] = useRecoilState(activeProjectAtom);
     const { books, activeBook, isLoading, error } = useBooks(activeProject);
 
     if (!activeProject) return null;
@@ -110,12 +114,10 @@ const SideNavBooks = () => {
     </SidebarMenuItem>
 }
 
-type SideNavChaptersType = {
-    bookID: string
-}
+const SideNavChapters = () => {
+    const [activeBook] = useRecoilState(activeBookAtom);
 
-const SideNavChapters = ({ bookID }: SideNavChaptersType) => {
-    const { chapters, activeChapter, isLoading, error } = useChapters(bookID);
+    const { chapters, activeChapter, isLoading, error } = useChapters(activeBook);
 
     if (isLoading) return <SidebarMenuItem>
         <Skeleton className="w-full rounded-full" />
