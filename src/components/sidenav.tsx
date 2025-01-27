@@ -155,6 +155,7 @@ const SideNavElements = ({ title, itemCount, children }: SideNavElementsTypes) =
 type SideNavSubElementsType = {
     title: string
     isLoading: boolean
+    // @ts-expect-error error is of any type from SWR
     error
     subElements: {
         id: string
