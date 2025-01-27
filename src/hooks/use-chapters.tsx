@@ -5,12 +5,13 @@ import { Chapter } from "@/types/chapter";
 import { useRecoilState } from "recoil";
 import useSWR from "swr";
 
-export function useChapters( bookID : string) {
+export function useChapters( bookID : string | null) {
     const [chapters, setChapters] = useRecoilState(chaptersAtom)
     const [activeChapter, setActiveChapter] = useRecoilState(activeChapterAtom)
 
     const chaptersApiUrl = `${API_URL}/chapters?bookID=${bookID}`;
-    const { isLoading, error } = useSWR<Chapter[]>(chaptersApiUrl,
+    const { isLoading, error } = useSWR<Chapter[]>(
+        bookID ? chaptersApiUrl : null,
         fetcher, {
         fallbackData: [],
         onSuccess(chaptersData) {
