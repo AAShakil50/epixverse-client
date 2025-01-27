@@ -91,27 +91,13 @@ const SideNavBooks = () => {
 
     if (!activeProject) return null;
 
-    if (isLoading) return <SidebarMenuItem>
-        <Skeleton className="w-full rounded-full" />
-    </SidebarMenuItem>
-
-    if (error || !books)
-        return <SidebarMenuItem>
-            No Books
-        </SidebarMenuItem>
-
-    return <SidebarMenuItem>
-        <SideNavElements
-            title="Books"
-            itemCount={books.length}>
-            {books.map((book) =>
-                <SideBarNavSubElement
-                    key={book.id}
-                    title={book.title}
-                    isActive={book.id === activeBook} />
-            )}
-        </SideNavElements>
-    </SidebarMenuItem>
+    return <SideNavSubElements
+        title="Books"
+        isLoading={isLoading}
+        error={error}
+        subElements={books}
+        activeElement={activeBook}
+    />
 }
 
 const SideNavChapters = () => {
@@ -119,27 +105,13 @@ const SideNavChapters = () => {
 
     const { chapters, activeChapter, isLoading, error } = useChapters(activeBook);
 
-    if (isLoading) return <SidebarMenuItem>
-        <Skeleton className="w-full rounded-full" />
-    </SidebarMenuItem>
-
-    if (error || !chapters)
-        return <SidebarMenuItem>
-            No Chapters
-        </SidebarMenuItem>
-
-    return <SidebarMenuItem>
-        <SideNavElements
-            title="Chapters"
-            itemCount={chapters.length}>
-            {chapters.map((chapter) =>
-                <SideBarNavSubElement
-                    key={chapter.id}
-                    title={chapter.title}
-                    isActive={chapter.id === activeChapter} />
-            )}
-        </SideNavElements>
-    </SidebarMenuItem>
+    return <SideNavSubElements
+        title="Chapters"
+        isLoading={isLoading}
+        error={error}
+        subElements={chapters}
+        activeElement={activeChapter}
+    />
 }
 
 type SideNavElementsTypes = {
@@ -178,6 +150,42 @@ const SideNavElements = ({ title, itemCount, children }: SideNavElementsTypes) =
             </SidebarMenuSub>
         </CollapsibleContent>
     </Collapsible>
+}
+
+type SideNavSubElementsType = {
+    title: string
+    isLoading: boolean
+    error
+    subElements: {
+        id: string
+        title: string
+    }[] | undefined
+    activeElement: string | null
+}
+
+const SideNavSubElements = ({ title, isLoading, error, subElements, activeElement }
+    : SideNavSubElementsType) => {
+    if (isLoading) return <SidebarMenuItem>
+        <Skeleton className="w-full rounded-full" />
+    </SidebarMenuItem>
+
+    if (error || !subElements)
+        return <SidebarMenuItem>
+            No {title}
+        </SidebarMenuItem>
+
+    return <SidebarMenuItem>
+        <SideNavElements
+            title={title}
+            itemCount={subElements.length}>
+            {subElements.map((subElement) =>
+                <SideBarNavSubElement
+                    key={subElement.id}
+                    title={subElement.title}
+                    isActive={subElement.id === activeElement} />
+            )}
+        </SideNavElements>
+    </SidebarMenuItem>
 }
 
 type SideBarNavSubElementType = {
