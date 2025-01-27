@@ -74,17 +74,16 @@ const SideNav = () => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            {activeProject && <SideNavBooks projectID={activeProject} />}
+            {activeProject && <SideNavBooks />}
         </SidebarContent>
     </Sidebar>
 }
 
-type SideNavBooksType = {
-    projectID: string
-}
+const SideNavBooks = () => {
+    const { activeProject } = useProjects();
+    const { books, activeBook, isLoading, error } = useBooks(activeProject);
 
-const SideNavBooks = ({ projectID }: SideNavBooksType) => {
-    const { books, activeBook, isLoading, error } = useBooks(projectID);
+    if (!activeProject) return null;
 
     if (isLoading) return <SidebarMenuItem>
         <Skeleton className="w-full rounded-full" />
