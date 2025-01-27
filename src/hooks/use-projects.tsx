@@ -43,6 +43,7 @@ export function useProjects() {
 
     return {
         projects: projects?.projects,
+        setProjects: setProjects,
         activeProject: activeProject,
         setActiveProject: setActiveProject,
         isLoading,

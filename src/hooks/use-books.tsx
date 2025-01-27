@@ -30,6 +30,7 @@ export function useBooks( projectID : string | null) {
 
     return {
         books: books?.books,
+        setBooks: setBooks,
         activeBook: activeBook,
         setActiveBooks: setActiveBook,
         isLoading,

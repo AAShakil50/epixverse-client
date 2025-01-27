@@ -26,6 +26,7 @@ export function useScenes( chapterID : string | null) {
 
     return {
         scenes: scenes?.scenes,
+        setScenes: setScenes,
         activeScene: activeScene,
         setActiveScene: setActiveScene,
         isLoading,

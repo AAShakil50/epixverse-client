@@ -26,6 +26,7 @@ export function useChapters( bookID : string | null) {
 
     return {
         chapters: chapters?.chapters,
+        setChapters: setChapters,
         activeChapter: activeChapter,
         setActiveChapter: setActiveChapter,
         isLoading,
