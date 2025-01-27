@@ -3,7 +3,7 @@ import { ChevronsDown } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { useProjects } from "@/hooks/use-projects";
 import { Skeleton } from "./ui/skeleton";
@@ -79,7 +79,7 @@ const SideNav = () => {
             </SidebarHeader>
             {activeProject && <>
                 <SideNavBooks />
-                <SideNavChapters />    
+                <SideNavChapters />
             </>}
         </SidebarContent>
     </Sidebar>
@@ -145,7 +145,8 @@ const SideNavChapters = () => {
 type SideNavElementsTypes = {
     title: string,
     itemCount?: number
-    children: React.ReactNode
+    children: ReactElement<typeof SideBarNavSubElement>
+    | ReactElement<typeof SideBarNavSubElement>[]
 }
 
 const SideNavElements = ({ title, itemCount, children }: SideNavElementsTypes) => {
