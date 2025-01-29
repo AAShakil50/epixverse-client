@@ -90,9 +90,16 @@ const SideNav = () => {
 
 const SideNavBooks = () => {
     const [activeProject] = useRecoilState(activeProjectAtom);
-    const { books, activeBook, isLoading, error } = useBooks(activeProject);
+    const {
+        books,
+        activeBook,
+        isLoading,
+        error
+    } = useBooks(activeProject);
 
-    if (!activeProject) return null;
+    if (!activeProject) {
+        return null;
+    }
 
     return <SideNavSubElements
         title="Books"
@@ -105,8 +112,16 @@ const SideNavBooks = () => {
 
 const SideNavChapters = () => {
     const [activeBook] = useRecoilState(activeBookAtom);
+    const {
+        chapters,
+        activeChapter,
+        isLoading,
+        error
+    } = useChapters(activeBook);
 
-    const { chapters, activeChapter, isLoading, error } = useChapters(activeBook);
+    if (!activeBook) {
+        return null;
+    }
 
     return <SideNavSubElements
         title="Chapters"
@@ -119,8 +134,16 @@ const SideNavChapters = () => {
 
 const SideNavScenes = () => {
     const [activeChapter] = useRecoilState(activeChapterAtom);
+    const {
+        scenes,
+        activeScene,
+        isLoading,
+        error
+    } = useScenes(activeChapter);
 
-    const { scenes, activeScene, isLoading, error } = useScenes(activeChapter);
+    if (!activeChapter) {
+        return null;
+    }
 
     return <SideNavSubElements
         title="Scenes"
