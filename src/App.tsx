@@ -7,6 +7,7 @@ import {
 import LoadingComponent from './components/loading'
 import HomePage from './pages/home'
 import { RecoilRoot } from 'recoil'
+import { RecoilLogger } from './debug/debug-recoil'
 
 const ProjectsPage = lazy(() => import('./pages/projects'))
 const ProjectPage = lazy(() => import('./pages/project'))
@@ -14,6 +15,7 @@ const ProjectPage = lazy(() => import('./pages/project'))
 function App() {
   return (
     <RecoilRoot>
+      <RecoilLogger />
       <Suspense fallback={<LoadingComponent />}>
         <BrowserRouter>
           <Routes>
