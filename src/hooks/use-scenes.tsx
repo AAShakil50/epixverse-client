@@ -11,7 +11,7 @@ export function useScenes( chapterID : string | null) {
 
     const scenesApiUrl = `${API_URL}/scenes?chapterID=${chapterID}`;
     const { isLoading, error } = useSWR<Scene[]>(
-        chapterID ? scenesApiUrl : null,
+        scenesApiUrl,
         fetcher, {
         fallbackData: [],
         onSuccess(scenesData) {
@@ -19,6 +19,7 @@ export function useScenes( chapterID : string | null) {
                 setScenes({ scenes: scenesData });
                 if (scenesData.length > 0)
                     setActiveScene(scenesData[0].id)
+                else setActiveScene(null);
             }
         },
     }

@@ -11,7 +11,7 @@ export function useChapters( bookID : string | null) {
 
     const chaptersApiUrl = `${API_URL}/chapters?bookID=${bookID}`;
     const { isLoading, error } = useSWR<Chapter[]>(
-        bookID ? chaptersApiUrl : null,
+        chaptersApiUrl,
         fetcher, {
         fallbackData: [],
         onSuccess(chaptersData) {
@@ -19,6 +19,7 @@ export function useChapters( bookID : string | null) {
                 setChapters({ chapters: chaptersData });
                 if (chaptersData.length > 0)
                     setActiveChapter(chaptersData[0].id)
+                else setActiveChapter(null);
             }
         },
     }

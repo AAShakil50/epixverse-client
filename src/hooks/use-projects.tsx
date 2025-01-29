@@ -32,12 +32,15 @@ export function useProjects() {
         );
 
     useEffect(() => {
-        if (projectsData && projectsData.length > 0) {
+        if (projectsData) {
             setProjects({
                 projects: projectsData
             })
 
-            if (!activeProject) setActiveProject(projectsData[0].id)
+            if (!activeProject) {
+                if (projectsData.length > 0) setActiveProject(projectsData[0].id);
+                else setActiveProject(null);
+            }
         }
     }, [activeProject, projectsData, setActiveProject, setProjects]);
 
