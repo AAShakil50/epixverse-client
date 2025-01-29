@@ -1,6 +1,7 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import SideNav from "../components/sidenav";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import Header from "@/components/header";
 
 const GQL_GET_APPLICATION = gql`
   query GetApplication {
@@ -25,6 +26,7 @@ const HomePage = () => {
     <SidebarProvider>
       <SideNav />
       <main className="w-full">
+        <Header />
         <div>
           <h1 className={`text-center text-7xl font-extrabold josefin-sans mt-12 mx-4`}>Epix Verse</h1>
           <h2 className={`kanit-400 text-3xl font-semibold text-center mb-12`}>shape your kingdom ...</h2>
