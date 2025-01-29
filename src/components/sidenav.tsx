@@ -1,5 +1,5 @@
 import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, useSidebar } from "./ui/sidebar";
-import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu, Sprout } from "lucide-react";
+import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu, Shapes, Sprout } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
@@ -104,6 +104,7 @@ const SideNav = () => {
                 <SideNavBooks />
                 <SideNavChapters />
                 <SideNavScenes />
+                <SideNavElementals />
             </>}
         </SidebarContent>
     </Sidebar>
@@ -180,6 +181,21 @@ const SideNavScenes = () => {
             })
         )}
         activeElement={activeScene}
+    />
+}
+
+// ! Unresolved Elementals Sidenav item
+const SideNavElementals = () => {
+    return <SideNavSubElements
+        title="Elementals"
+        icon={Shapes}
+        isLoading={false}
+        error={null}
+        activeElement={null}
+        subElements={[
+            { id: "498t93438th3", title: "Characters" },
+            { id: "498t989h4545", title: "Scenes" }
+        ]}
     />
 }
 
