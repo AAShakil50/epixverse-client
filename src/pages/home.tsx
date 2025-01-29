@@ -1,28 +1,11 @@
-import { gql, useLazyQuery } from "@apollo/client";
 import SideNav from "../components/sidenav";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { PencilLine } from "lucide-react";
-
-const GQL_GET_APPLICATION = gql`
-  query GetApplication {
-    epixVerse { app version description developer }
-  }
-`;
-
-type Application = {
-  app: string;
-  version: string;
-  description: string;
-  developer: string[];
-};
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
-  const [queryApp, { loading, error, data }] = useLazyQuery<{ epixVerse: Application }>(
-    GQL_GET_APPLICATION,
-    { fetchPolicy: 'no-cache' }
-  );
 
   return (
     <SidebarProvider>
@@ -41,17 +24,15 @@ const HomePage = () => {
               className={`kanit-400 text-lg`}>
               The writing sanctuary for fiction & nonfiction authors.
             </p>
-            <Button
-              // className={`josefin-sans mx-auto flex justify-center text-2xl text-white
-              //     bg-blue-500 px-8 py-4 rounded-lg font-bold`}
-              size="lg"
-              className="gap-4 my-4 px-8 text-lg"
-              onClick={() => queryApp()}>
-              <PencilLine /> Lead Your Quill
-            </Button>
-            {(loading) && <div className="text-center mt-4 text-2xl">...</div>}
-            {(error) && <div className="text-center mt-4 text-2xl">error while fethcing</div>}
-            {(data) && <div className="text-center mt-4 text-2xl">{data.epixVerse.version}</div>}
+            <Link
+              to="/projects">
+              <Button
+                size="lg"
+                role="link"
+                className="gap-4 my-4 px-8 text-lg josefin-sans">
+                <PencilLine /> Lead Your Quill
+              </Button>
+            </Link>
           </div>
         </section>
       </main>
