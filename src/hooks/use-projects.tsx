@@ -2,7 +2,6 @@ import { fetcher } from "@/lib/fetcher";
 import { API_URL } from "@/lib/site.configs";
 import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
 import { Project } from "@/types/project";
-import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import useSwr from "swr"
 
@@ -22,27 +21,25 @@ export function useProjects() {
     const [projects, setProjects] = useRecoilState(projectsAtom);
     const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
 
-    const { data: projectsData, isLoading, error } = useSwr<Project[]>
+    const { isLoading, error } = useSwr<Project[]>
         (
             `${API_URL}/projects`,
             fetcher,
             {
                 fallbackData: [],
+                onSuccess(projectsData) {
+                    if (projectsData) {
+                        setProjects({
+                            projects: projectsData
+                        });
+                        if (!activeProject) {
+                            if (projectsData.length > 0) setActiveProject(projectsData[0].id);
+                            else setActiveProject(null);
+                        }
+                    }
+                },
             }
         );
-
-    useEffect(() => {
-        if (projectsData) {
-            setProjects({
-                projects: projectsData
-            })
-
-            if (!activeProject) {
-                if (projectsData.length > 0) setActiveProject(projectsData[0].id);
-                else setActiveProject(null);
-            }
-        }
-    }, [activeProject, projectsData, setActiveProject, setProjects]);
 
     return {
         projects: projects?.projects,
