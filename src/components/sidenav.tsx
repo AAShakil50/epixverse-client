@@ -119,7 +119,7 @@ const SideNavBooks = () => {
         error
     } = useBooks(activeProject);
 
-    if (!activeProject) {
+    if (!books?.length) {
         return null;
     }
 
@@ -142,7 +142,7 @@ const SideNavChapters = () => {
         error
     } = useChapters(activeBook);
 
-    if (!activeBook) {
+    if (!chapters?.length) {
         return null;
     }
 
@@ -165,7 +165,7 @@ const SideNavScenes = () => {
         error
     } = useScenes(activeChapter);
 
-    if (!activeChapter) {
+    if (!scenes?.length) {
         return null;
     }
 
