@@ -1,76 +1,166 @@
-import { gql, useQuery } from "@apollo/client";
-import Expandable from "../components/expandable";
 import SideNav from "../components/sidenav";
-
-const GQL_PROJECTS = gql`
-    query GetProjects {
-        projects { id title description }
-    }
-`;
-
-type GQL_PROJECT_TYPE = {
-    projects: {
-        id: string;
-        title: string;
-        description: string;
-    }[]
-};
+import { useProjectOne, useProjects } from "@/hooks/use-projects";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Header from "@/components/header";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { MoveRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ProjectsPage = () => {
-    const { loading, error, data } = useQuery<GQL_PROJECT_TYPE>(
-        GQL_PROJECTS, { fetchPolicy: 'network-only', nextFetchPolicy: 'cache-first' }
-    );
+    const { projects, isLoading, error } = useProjects();
 
-    if (loading) return <ProjectPageLoading />;
-    if (error || !data) return <ProjectPageError />;
+    if (isLoading) return <ProjectPageLoading />;
+    if (error || !projects) return <ProjectPageError />;
 
     return (
-        <main className="flex flex-col flex-grow h-full">
-            <div className="flex flex-row flex-grow h-full">
-                <SideNav></SideNav>
-                <div className="m-8 flex flex-col gap-4 h-full">
+        <SidebarProvider>
+            <SideNav />
+            <main className="w-full">
+                <Header />
+                <section className="grid gap-4 grid-cols-4 m-8">
                     {
-                        data.projects.map(
-                            project => (
-                                <Expandable
+                        projects.map(
+                            (project) => (
+                                <ProjectDetails
                                     key={project.id}
-                                    title={project.title}
-                                    description={project.description}
-                                ><ProjectDetails id={project.id} /></Expandable>
+                                    projectId={project.id} />
                             )
                         )
                     }
-                </div>
-            </div>
-        </main>
+                </section>
+            </main>
+        </SidebarProvider>
     )
 }
 
-const GQL_COUNT_PROJECT = gql`
-    query counts($projectId: ID!) {
-        project(id: $projectId) { books { chapters {  id } }  }
-    }
-`;
 
-type GQL_COUNT_PROJECT_TYPE = {
-    project: { books: { chapters: { id: string; }[] }[] }
+const ProjectDetails = ({ projectId }: { projectId: string }) => {
+    const { project, books, chapters, scenes, isLoading } = useProjectOne(projectId);
+
+    if (isLoading)
+        return <Skeleton className="w-10 h-2" />;
+
+    if (!project) return null;
+
+    return <Card
+        className="flex flex-col h-full josefin-sans">
+        <CardHeader>
+            <CardTitle>{project.title}</CardTitle>
+            <CardDescription
+                className="kanit-400">
+                {project.description}
+            </CardDescription>
+        </CardHeader>
+        <CardContent>
+            {
+                books &&
+                <ElementsSpan
+                    title="Books"
+                    count={books.length}
+                    tooltip={true}
+                    elements={
+                        books.map(item =>
+                        ({
+                            title: item.title,
+                            link: `/book?id=${item.id}`
+                        })
+                        )
+                    } />
+            }
+            {
+                chapters &&
+                <ElementsSpan
+                    title="Chapters"
+                    count={chapters.length}
+                    tooltip={true}
+                    elements={
+                        chapters.map(
+                            item =>
+                            ({
+                                title: item.title,
+                                link: `/chapter?id=${item.id}`
+                            })
+                        )
+                    } />
+            }
+            {
+                scenes &&
+                <ElementsSpan
+                    title="Scenes"
+                    count={scenes.length}
+                    tooltip={false}
+                    elements={
+                        scenes.map(
+                            item =>
+                            ({
+                                title: item.title,
+                                link: `/scene?id=${item.id}`
+                            })
+                        )
+                    }
+                />
+            }
+        </CardContent>
+        <CardFooter
+            className="mt-auto">
+            <Link 
+            to={`/project?id=${projectId}`}
+            className=" w-full kanit-400">
+                <Button
+                    role="link"
+                    className="w-full">
+                    Expand Project <MoveRight />
+                </Button>
+            </Link>
+        </CardFooter>
+    </Card>
 };
 
-const ProjectDetails = ({ id }: { id: string }) => {
-    const { loading, error, data } = useQuery<GQL_COUNT_PROJECT_TYPE>(
-        GQL_COUNT_PROJECT, { variables: { projectId: id } }
-    );
+type ElementsSpanType = {
+    title: string
+    count: number
+    tooltip: boolean
+    elements: {
+        title: string
+        link: string
+    }[]
+}
 
-    if (loading) return <div>Loading...</div>;
-    if (error || !data) return <div>Error...</div>;
-
-    return (
-        <div className="josefin-sans ml-2 text-gray-500">
-            <div className="">Books: {data.project.books.length}</div>
-            <div>Chapters: {data.project.books.reduce((acc, book) => acc + book.chapters.length, 0)}</div>
-        </div>
-    )
-};
+const ElementsSpan = ({ title, count, tooltip, elements }: ElementsSpanType) => {
+    return <div>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger>
+                    <div className="">
+                        {title}:&nbsp;
+                        <span
+                            className={`${tooltip && count > 0 && 'border-b-2'}
+                            border-dotted border-gray-400`}>
+                            {count}
+                        </span>
+                    </div>
+                </TooltipTrigger>
+                {tooltip && elements && elements.length > 0 &&
+                    <TooltipContent
+                        className="flex flex-row gap-2">
+                        {
+                            elements.map((item) =>
+                                <Link to={item.link}>
+                                    <span
+                                        className="border-b-2 border-dotted border-gray-400"
+                                    >{item.title}</span>
+                                </Link>
+                            )
+                        }
+                    </TooltipContent>
+                }
+            </Tooltip>
+        </TooltipProvider>
+    </div>
+}
 
 const ProjectPageLoading = () => {
     return (
