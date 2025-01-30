@@ -106,9 +106,9 @@ const ProjectDetails = ({ projectId }: { projectId: string }) => {
         </CardContent>
         <CardFooter
             className="mt-auto">
-            <Link 
-            to={`/project?id=${projectId}`}
-            className=" w-full kanit-400">
+            <Link
+                to={`/project?id=${projectId}`}
+                className=" w-full kanit-400">
                 <Button
                     role="link"
                     className="w-full">
