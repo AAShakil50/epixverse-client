@@ -209,15 +209,21 @@ type SideNavElementsTypes = {
 
 const SideNavElements = ({ title, icon: Icon, itemCount, children }: SideNavElementsTypes) => {
     const [open, setOpen] = useState(false);
-    const { open: openSidebar } = useSidebar();
+    const { open: openSidebar, toggleSidebar } = useSidebar();
 
-    if (!openSidebar)
+    if (!openSidebar) {
+        if(open) setOpen(false);
         return <Button
             variant="ghost"
-            className="mx-auto"
-            size="icon">
+            className="ml-1"
+            size="icon"
+            onClick={() => {
+                setOpen(!open);
+                toggleSidebar();
+            }}>
             <Icon />
         </Button>
+    }
 
     return <Collapsible
         defaultOpen
@@ -226,6 +232,7 @@ const SideNavElements = ({ title, icon: Icon, itemCount, children }: SideNavElem
         className="group/collapsible w-full">
         <CollapsibleTrigger asChild>
             <SidebarMenuButton className="pl-4 mx-auto">
+                <Icon className="-mt-1" />
                 {title}
                 {itemCount !== undefined && <Badge
                     variant="outline">
@@ -273,7 +280,7 @@ const SideNavSubElements = ({ title, icon, isLoading, error, subElements, active
 
     return <SidebarMenuItem>
         <SideNavElements
-            title={title}
+            title={title} mx-auto
             icon={icon}
             itemCount={subElements.length}>
             {subElements.map((subElement) =>
