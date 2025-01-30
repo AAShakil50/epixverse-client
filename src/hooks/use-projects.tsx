@@ -55,10 +55,10 @@ export function useProjects() {
     };
 }
 
-export function useProjectOne(projectId: string) {
+export function useProjectOne(projectId: string | null) {
     // Fetch project
     const { data: project, isLoading: isProjectLoading } = useSwr<Project[]>(
-        `${API_URL}/projects?id=${projectId}`,
+        projectId ? `${API_URL}/projects?id=${projectId}` : null,
         fetcher,
     );
 
