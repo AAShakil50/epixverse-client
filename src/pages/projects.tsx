@@ -147,8 +147,10 @@ const ElementsSpan = ({ title, count, tooltip, elements }: ElementsSpanType) => 
                     <TooltipContent
                         className="flex flex-row gap-2">
                         {
-                            elements.map((item) =>
-                                <Link to={item.link}>
+                            elements.map((item, index) =>
+                                <Link
+                                    key={index}
+                                    to={item.link}>
                                     <span
                                         className="border-b-2 border-dotted border-gray-400"
                                     >{item.title}</span>
