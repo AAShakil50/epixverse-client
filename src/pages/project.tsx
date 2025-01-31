@@ -5,6 +5,8 @@ import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
 import { Pen } from "lucide-react";
 import { Project } from "@/types/project";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -23,6 +25,16 @@ const ProjectPage = () => {
 }
 
 const SectionProject = ({ project }: { project: Project | null }) => {
+    const [titleEditing, setTitleEditing] = useState(false);
+    const [title, setTitle] = useState(
+        [project?.title ?? "", project?.title ?? ""]
+    ); // [preserved title, alterable title]
+
+    const [descEditing, setDescEditing] = useState(false);
+    const [desc, setDesc] = useState(
+        [project?.description ?? "", project?.description ?? ""]
+    ); // [preserved title, alterable title]
+
     if (!project)
         return <section
             className="m-8 text-4xl font-bold josefin-sans 
@@ -36,24 +48,75 @@ const SectionProject = ({ project }: { project: Project | null }) => {
         <div
             className="mx-4">
             <h1
-                className="group text-4xl font-bold josefin-sans 
+                className="group text-4xl font-bold josefin-sans text-black
                     my-2 flex flex-row items-center">
-                <IconEditable />
-                {project.title}
+                {!titleEditing ?
+                    <>
+                        <IconEditable
+                            onClick={() => {
+                                setTitleEditing(true)
+                            }} />
+                        {title[0]}
+                    </> :
+                    <Input
+                        value={title[1]}
+                        onBlur={() => {
+                            setTitleEditing(false);
+                            setTitle([title[0], title[0]]);
+                        }}
+                        onChange={(e) => {
+                            setTitle([title[0], e.currentTarget.value])
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                setTitleEditing(false);
+                                setTitle([e.currentTarget.value, e.currentTarget.value]);
+                            } else if (e.key === 'Escape') {
+                                setTitleEditing(false);
+                                setTitle([title[0], title[0]]);
+                            }
+                        }} />
+                }
             </h1>
             <h2
                 className="group text-lg text-gray-400 kanit-400">
-                <IconEditable />
-                {project.description}
+                {!descEditing ?
+                    <>
+                        <IconEditable
+                            onClick={() => {
+                                setDescEditing(true)
+                            }} />
+                        {desc[0]}
+                    </> :
+                    <Input
+                        value={desc[1]}
+                        onBlur={() => {
+                            setDescEditing(false);
+                            setDesc([desc[0], desc[0]]);
+                        }}
+                        onChange={(e) => {
+                            setDesc([desc[0], e.currentTarget.value])
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                setDescEditing(false);
+                                setDesc([e.currentTarget.value, e.currentTarget.value]);
+                            } else if (e.key === 'Escape') {
+                                setDescEditing(false);
+                                setDesc([desc[0], desc[0]]);
+                            }
+                        }} />
+                }
             </h2>
         </div>
     </section>
 }
 
-const IconEditable = () => {
+const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
     return <Pen
         role="button"
         size="1em"
+        onClick={() => onClick()}
         className={`
             mr-1
             opacity-0 hidden
