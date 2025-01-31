@@ -1,12 +1,10 @@
 import { fetcher } from "@/lib/fetcher";
 import { API_URL } from "@/lib/site.configs";
-import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
 import { Book } from "@/types/book";
 import { Chapter } from "@/types/chapter";
 import { Project } from "@/types/project";
 import { Scene } from "@/types/scene";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 import useSwr from "swr"
 
 /**
@@ -22,8 +20,7 @@ import useSwr from "swr"
  * - `error`: Any error that occurred during data fetching.
  */
 export function useProjects() {
-    const [projects, setProjects] = useRecoilState(projectsAtom);
-    const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
+    const [projects, setProjects] = useState<Project[] | null>(null);
 
     const { isLoading, error } = useSwr<Project[]>
         (
@@ -32,24 +29,14 @@ export function useProjects() {
             {
                 fallbackData: [],
                 onSuccess(projectsData) {
-                    if (projectsData) {
-                        setProjects({
-                            projects: projectsData
-                        });
-                        if (!activeProject) {
-                            if (projectsData.length > 0) setActiveProject(projectsData[0].id);
-                            else setActiveProject(null);
-                        }
-                    }
+                    setProjects(projectsData);
                 },
             }
         );
 
     return {
-        projects: projects?.projects,
+        projects: projects,
         setProjects: setProjects,
-        activeProject: activeProject,
-        setActiveProject: setActiveProject,
         isLoading,
         error
     };
