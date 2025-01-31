@@ -3,10 +3,12 @@ import { useProjectOne } from "@/hooks/use-projects";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
-import { Pen } from "lucide-react";
+import { ChevronsDown, Pen } from "lucide-react";
 import { Project } from "@/types/project";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -19,6 +21,8 @@ const ProjectPage = () => {
         <main className="w-full">
             <Header />
             <SectionProject
+                project={project} />
+            <SectionBooks
                 project={project} />
         </main>
     </SidebarProvider>
@@ -109,6 +113,32 @@ const SectionProject = ({ project }: { project: Project | null }) => {
                 }
             </h2>
         </div>
+    </section>
+}
+
+const SectionBooks = ({ project }: { project: Project | null }) => {
+    if(!project) return null;
+
+    return <section className="m-4 p-4 mt-8">
+        <Collapsible
+            defaultOpen
+            className="group/collapsible w-full">
+            <CollapsibleTrigger asChild>
+                <div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="px-4 py-5 w-full flex justify-between
+                        text-2xl font-semibold bg-slate-100 rounded-none">
+                        Books <ChevronsDown size={18} />
+                    </Button>
+                </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent
+                className="p-4 border-l-2">
+                Content here
+            </CollapsibleContent>
+        </Collapsible>
     </section>
 }
 
