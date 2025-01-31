@@ -115,7 +115,7 @@ const SectionProject = ({ project }: { project: Project | null }) => {
 const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
     return <Pen
         role="button"
-        size="1em"
+        size="0.7em"
         onClick={() => onClick()}
         className={`
             mr-1
@@ -126,7 +126,7 @@ const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
             duration-500`
         }
         style={
-            { marginRight: '0.33em' }
+            { marginRight: '0.22em' }
         } />
 }
 
