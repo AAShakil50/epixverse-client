@@ -19,7 +19,7 @@ const ProjectPage = () => {
                 {
                     !project ? <span>Project not found</span> :
                         <div
-                        className="mx-4">
+                            className="mx-4">
                             <h1
                                 className="group text-4xl font-bold josefin-sans 
                                 my-2 flex flex-row items-center">
@@ -49,6 +49,9 @@ const IconEditable = () => {
             group-hover-within:inline group-hover-within:opacity-100
             transition-all
             duration-500`
+        }
+        style={
+            { marginRight: '0.33em' }
         } />
 }
 
