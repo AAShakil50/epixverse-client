@@ -15,6 +15,7 @@ import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
 import { activeBookAtom } from "@/recoil/atoms/atom-books";
 import { useScenes } from "@/hooks/use-scenes";
 import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
+import { useKeyboardShortcut } from "@/hooks/use-keyboard";
 
 // type SideNavProps = {
 //     title: string,
@@ -36,6 +37,13 @@ const SideNavToggler = () => {
 const SideNav = () => {
     const { open: openSidebar } = useSidebar()
     const [openPopup, setOpenPopup] = useState(false);
+
+    useKeyboardShortcut((event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
+            event.preventDefault();
+            setOpenPopup((state) => !state);
+        }
+    })
 
     const { projects, activeProject, setActiveProject, isLoading } = useProjects();
 
@@ -212,7 +220,7 @@ const SideNavElements = ({ title, icon: Icon, itemCount, children }: SideNavElem
     const { open: openSidebar, toggleSidebar } = useSidebar();
 
     if (!openSidebar) {
-        if(open) setOpen(false);
+        if (open) setOpen(false);
         return <Button
             variant="ghost"
             className="ml-1"
