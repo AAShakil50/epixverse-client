@@ -1,9 +1,10 @@
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useProjectOne } from "@/hooks/use-projects";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
 import { Pen } from "lucide-react";
+import { Project } from "@/types/project";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -15,27 +16,38 @@ const ProjectPage = () => {
         <SideNav />
         <main className="w-full">
             <Header />
-            <section className="m-4">
-                {
-                    !project ? <span>Project not found</span> :
-                        <div
-                            className="mx-4">
-                            <h1
-                                className="group text-4xl font-bold josefin-sans 
-                                my-2 flex flex-row items-center">
-                                <IconEditable />
-                                {project.title}
-                            </h1>
-                            <h2
-                                className="group text-lg text-gray-400 kanit-400">
-                                <IconEditable />
-                                {project.description}
-                            </h2>
-                        </div>
-                }
-            </section>
+            <SectionProject
+                project={project} />
         </main>
     </SidebarProvider>
+}
+
+const SectionProject = ({ project }: { project: Project | null }) => {
+    if (!project)
+        return <section
+            className="m-8 text-4xl font-bold josefin-sans 
+                my-2 flex flex-row items-center">
+            <h1>Project not found. Go to
+                <Link to="/projects">Projects</Link>
+            </h1>
+        </section>
+
+    return <section className="m-4">
+        <div
+            className="mx-4">
+            <h1
+                className="group text-4xl font-bold josefin-sans 
+                    my-2 flex flex-row items-center">
+                <IconEditable />
+                {project.title}
+            </h1>
+            <h2
+                className="group text-lg text-gray-400 kanit-400">
+                <IconEditable />
+                {project.description}
+            </h2>
+        </div>
+    </section>
 }
 
 const IconEditable = () => {
