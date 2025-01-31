@@ -3,7 +3,6 @@ import { useProjectOne } from "@/hooks/use-projects";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pen } from "lucide-react";
 
 const ProjectPage = () => {
@@ -19,20 +18,20 @@ const ProjectPage = () => {
             <section className="m-4">
                 {
                     !project ? <span>Project not found</span> :
-                        <Card>
-                            <CardHeader>
-                                <CardTitle
-                                    className="group">
-                                    <IconEditable />
-                                    {project.title}
-                                </CardTitle>
-                                <CardDescription
-                                    className="group">
-                                    <IconEditable />
-                                    {project.description}
-                                </CardDescription>
-                            </CardHeader>
-                        </Card>
+                        <div
+                        className="mx-4">
+                            <h1
+                                className="group text-4xl font-bold josefin-sans 
+                                my-2 flex flex-row items-center">
+                                <IconEditable />
+                                {project.title}
+                            </h1>
+                            <h2
+                                className="group text-lg text-gray-400 kanit-400">
+                                <IconEditable />
+                                {project.description}
+                            </h2>
+                        </div>
                 }
             </section>
         </main>
