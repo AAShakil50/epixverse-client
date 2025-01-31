@@ -22,7 +22,7 @@ function App() {
             <Route path='/'>
               <Route index element={<HomePage />} />
               <Route path='projects' element={<ProjectsPage />} />
-              <Route path='project/:id' element={<ProjectPage />} />
+              <Route path='project' element={<ProjectPage />} />
               <Route path='*' element={<center className='text-4xl font-bold'>404 Not Found</center>} />
             </Route>
           </Routes>
