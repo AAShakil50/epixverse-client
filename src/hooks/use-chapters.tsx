@@ -37,10 +37,12 @@ export function useChaptersAtomized() {
     const { chapters, isLoading, error } = useChapters(activeBook)
     const isAtomChaptersEmpty = !atomChapters.length;
 
+    // change chapters-atom to whatever SWR (chapters) responds
     useEffect(() => {
         setAtomChapters(chapters ?? [])
     }, [chapters, setAtomChapters])
 
+    // change active-chapter-atom whenever chapters-atom changes
     useEffect(() => {
         if (atomChapters.length > 0) {
             setActiveChapter(atomChapters[0].id)
@@ -49,6 +51,13 @@ export function useChaptersAtomized() {
         }
     }, [atomChapters, setActiveChapter])
 
+    // empty chapters-atom whenever active-book-atom nulls,
+    // because null active-book-atom prevents SWR request
+    useEffect(() => {
+        if (!activeBook) {
+            setAtomChapters([])
+        }
+    }, [activeBook, setAtomChapters])
 
     return {
         chapters: atomChapters,
