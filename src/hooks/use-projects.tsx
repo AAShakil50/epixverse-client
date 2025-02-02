@@ -58,12 +58,6 @@ export function useProjectsAtomized() {
             });
     }, [activeProject, isRecoilEmpty, projects, setActiveProject, setProjectsData]);
 
-    if (projects && !activeProject) {
-        setActiveProject(
-            projects.length > 0 ? projects[0].id : null
-        )
-    }
-
     useEffect(() => {
         if (projectsData && projectsData.projects.length > 0 && !activeProject) {
             setActiveProject(projectsData.projects[0].id);
