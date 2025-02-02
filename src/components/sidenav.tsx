@@ -7,11 +7,10 @@ import { memo, ReactElement, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import { useProjectsAtomized } from "@/hooks/use-projects";
 import { Skeleton } from "./ui/skeleton";
-import { useBooks } from "@/hooks/use-books";
+import { useBooksAtomized } from "@/hooks/use-books";
 import { Badge } from "./ui/badge";
 import { useChapters } from "@/hooks/use-chapters";
 import { useRecoilState } from "recoil";
-import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
 import { activeBookAtom } from "@/recoil/atoms/atom-books";
 import { useScenes } from "@/hooks/use-scenes";
 import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
@@ -124,13 +123,12 @@ const SideNav = () => {
 };
 
 const SideNavBooks = () => {
-    const [activeProject] = useRecoilState(activeProjectAtom);
     const {
         books,
         activeBook,
         isLoading,
         error
-    } = useBooks(activeProject);
+    } = useBooksAtomized();
 
     if (!books?.length) {
         return null;
