@@ -47,24 +47,34 @@ export function useProjects() {
 export function useProjectsAtomized() {
     const [projectsData, setProjectsData] = useRecoilState(projectsAtom);
     const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom);
+
     const { projects, isLoading, error } = useProjects();
+    const isRecoilEmpty = !projectsData || !projectsData.projects.length;
 
     useEffect(() => {
-        setProjectsData({
-            projects: projects ?? []
-        });
-        if (projects && !activeProject){
-            setActiveProject(
-                projects.length > 0 ? projects[0].id : null
-            )
+        if (isRecoilEmpty && projects && projects.length > 0)
+            setProjectsData({
+                projects: projects ?? []
+            });
+    }, [activeProject, isRecoilEmpty, projects, setActiveProject, setProjectsData]);
+
+    if (projects && !activeProject) {
+        setActiveProject(
+            projects.length > 0 ? projects[0].id : null
+        )
+    }
+
+    useEffect(() => {
+        if (projectsData && projectsData.projects.length > 0 && !activeProject) {
+            setActiveProject(projectsData.projects[0].id);
         }
-    }, [activeProject, projects, setActiveProject, setProjectsData]);
+    }, [activeProject, projectsData, setActiveProject])
 
     return {
         projects: projectsData?.projects,
         activeProject: activeProject,
         setActiveProject: setActiveProject,
-        isLoading: isLoading,
+        isLoading: isRecoilEmpty ? isLoading : false,
         error: error
     }
 }
