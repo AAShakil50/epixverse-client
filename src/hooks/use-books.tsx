@@ -34,25 +34,23 @@ export function useBooksAtomized() {
     const [activeBook, setActiveBook] = useRecoilState(activeBookAtom)
 
     const [activeProject] = useRecoilState(activeProjectAtom)
-    const { books, isLoading, error} = useBooks(activeProject)
-    const isAtomBooksEmpty = !atomBooks || !atomBooks.books.length;
+    const { books, isLoading, error } = useBooks(activeProject)
+    const isAtomBooksEmpty = !atomBooks.length;
 
     useEffect(() => {
-        if(books && books.length > 0){
-            setAtomBooks({
-                books: books
-            })
-        }
-    }, [books, setAtomBooks]);
+        setAtomBooks(books ?? [])
+    }, [books, setAtomBooks])
 
     useEffect(() => {
-        if (atomBooks && atomBooks.books.length > 0){
-            setActiveBook(atomBooks.books[0].id);
+        if (atomBooks.length > 0) {
+            setActiveBook(atomBooks[0].id)
+        }else{
+            setActiveBook(null)
         }
     }, [atomBooks, setActiveBook])
-    
+
     return {
-        books: atomBooks?.books,
+        books: atomBooks,
         activeBook,
         setActiveBook,
         isLoading: isAtomBooksEmpty ? isLoading : false,

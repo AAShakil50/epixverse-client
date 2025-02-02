@@ -1,14 +1,9 @@
 import { Book } from '@/types/book'
 import { atom } from 'recoil'
 
-type BooksAtomType = {
-    // books with data
-    books: Book[],
-}
-
-const booksAtom = atom<BooksAtomType | null>({
+const booksAtom = atom<Book[]>({
     key: 'booksAtom',
-    default: null,
+    default: [],
 })
 
 const activeBookAtom = atom<string | null>({
