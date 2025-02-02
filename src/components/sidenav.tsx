@@ -3,9 +3,9 @@ import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu, Shapes, Sprou
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
-import { ReactElement, useState } from "react";
+import { memo, ReactElement, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { useProjects } from "@/hooks/use-projects";
+import { useProjectsAtomized } from "@/hooks/use-projects";
 import { Skeleton } from "./ui/skeleton";
 import { useBooks } from "@/hooks/use-books";
 import { Badge } from "./ui/badge";
@@ -45,7 +45,12 @@ const SideNav = () => {
         }
     })
 
-    const { projects, activeProject, setActiveProject, isLoading } = useProjects();
+    const {
+        projects,
+        activeProject,
+        setActiveProject,
+        isLoading,
+    } = useProjectsAtomized();
 
     return <Sidebar
         collapsible="icon">
@@ -116,7 +121,7 @@ const SideNav = () => {
             </>}
         </SidebarContent>
     </Sidebar>
-}
+};
 
 const SideNavBooks = () => {
     const [activeProject] = useRecoilState(activeProjectAtom);
@@ -318,4 +323,4 @@ const SideBarNavSubElement = ({ title, isActive }: SideBarNavSubElementType) => 
     </SidebarMenuSubItem>
 }
 
-export default SideNav;
+export default memo(SideNav);

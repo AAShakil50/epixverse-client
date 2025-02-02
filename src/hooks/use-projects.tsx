@@ -1,10 +1,12 @@
 import { fetcher } from "@/lib/fetcher";
 import { API_URL } from "@/lib/site.configs";
+import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
 import { Book } from "@/types/book";
 import { Chapter } from "@/types/chapter";
 import { Project } from "@/types/project";
 import { Scene } from "@/types/scene";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import useSwr from "swr"
 
 /**
@@ -40,6 +42,31 @@ export function useProjects() {
         isLoading,
         error
     };
+}
+
+export function useProjectsAtomized() {
+    const [projectsData, setProjectsData] = useRecoilState(projectsAtom);
+    const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom);
+    const { projects, isLoading, error } = useProjects();
+
+    useEffect(() => {
+        setProjectsData({
+            projects: projects ?? []
+        });
+        if (projects && !activeProject){
+            setActiveProject(
+                projects.length > 0 ? projects[0].id : null
+            )
+        }
+    }, [activeProject, projects, setActiveProject, setProjectsData]);
+
+    return {
+        projects: projectsData?.projects,
+        activeProject: activeProject,
+        setActiveProject: setActiveProject,
+        isLoading: isLoading,
+        error: error
+    }
 }
 
 export function useProjectOne(projectId: string | null) {
