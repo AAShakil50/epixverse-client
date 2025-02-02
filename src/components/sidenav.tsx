@@ -10,9 +10,7 @@ import { Skeleton } from "./ui/skeleton";
 import { useBooksAtomized } from "@/hooks/use-books";
 import { Badge } from "./ui/badge";
 import { useChaptersAtomized } from "@/hooks/use-chapters";
-import { useRecoilState } from "recoil";
-import { useScenes } from "@/hooks/use-scenes";
-import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
+import { useScenesAtomized } from "@/hooks/use-scenes";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard";
 
 // type SideNavProps = {
@@ -166,13 +164,12 @@ const SideNavChapters = () => {
 }
 
 const SideNavScenes = () => {
-    const [activeChapter] = useRecoilState(activeChapterAtom);
     const {
         scenes,
         activeScene,
         isLoading,
         error
-    } = useScenes(activeChapter);
+    } = useScenesAtomized();
 
     if (!scenes?.length) {
         return null;

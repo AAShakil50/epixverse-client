@@ -1,14 +1,9 @@
 import { Scene } from '@/types/scene'
 import { atom } from 'recoil'
 
-type ScenesAtomType = {
-    // scenes with data
-    scenes: Scene[],
-}
-
-const scenesAtom = atom<ScenesAtomType | null>({
+const scenesAtom = atom<Scene[]>({
     key: 'scenesAtom',
-    default: null,
+    default: [],
 })
 
 const activeSceneAtom = atom<string | null>({
@@ -16,4 +11,4 @@ const activeSceneAtom = atom<string | null>({
     default: null
 })
 
-export { scenesAtom , activeSceneAtom }
+export { scenesAtom, activeSceneAtom }
