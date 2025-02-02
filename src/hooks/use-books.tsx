@@ -37,10 +37,12 @@ export function useBooksAtomized() {
     const { books, isLoading, error } = useBooks(activeProject)
     const isAtomBooksEmpty = !atomBooks.length;
 
+    // change books-atom to whatever SWR (books) responds
     useEffect(() => {
         setAtomBooks(books ?? [])
     }, [books, setAtomBooks])
 
+    // change active-book-atom whenever books-atom changes
     useEffect(() => {
         if (atomBooks.length > 0) {
             setActiveBook(atomBooks[0].id)
@@ -48,6 +50,14 @@ export function useBooksAtomized() {
             setActiveBook(null)
         }
     }, [atomBooks, setActiveBook])
+
+    // empty books-atom whenever active-project-atom nulls,
+    // because null active-project-atom prevents SWR request
+    useEffect(() => {
+        if (!activeProject) {
+            setAtomBooks([])
+        }
+    }, [activeProject, setAtomBooks])
 
     return {
         books: atomBooks,
