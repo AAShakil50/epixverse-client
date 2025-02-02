@@ -8,32 +8,43 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Project } from "@/types/project";
 
 const ProjectsPage = () => {
     const { projects, isLoading, error } = useProjects();
 
     if (isLoading) return <ProjectPageLoading />;
-    if (error || !projects) return <ProjectPageError />;
+    if (error) return <ProjectPageError />;
 
     return (
         <SidebarProvider>
             <SideNav />
             <main className="w-full">
                 <Header />
-                <section className="grid gap-4 grid-cols-4 m-8">
-                    {
-                        projects.map(
-                            (project) => (
-                                <ProjectDetails
-                                    key={project.id}
-                                    projectId={project.id} />
-                            )
-                        )
-                    }
-                </section>
+                {
+                    projects ? <ProjectsTiles projects={projects} /> :
+                        <section
+                            className="flex justify-between items-center m-8">
+                            <h1>No Project, Create one.</h1>
+                        </section>
+                }
             </main>
         </SidebarProvider>
     )
+}
+
+const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
+    return <section className="grid gap-4 grid-cols-4 m-8">
+        {
+            projects.map(
+                (project) => (
+                    <ProjectDetails
+                        key={project.id}
+                        projectId={project.id} />
+                )
+            )
+        }
+    </section>
 }
 
 
