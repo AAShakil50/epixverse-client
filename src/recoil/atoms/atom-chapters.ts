@@ -1,14 +1,9 @@
 import { Chapter } from '@/types/chapter'
 import { atom } from 'recoil'
 
-type ChaptersAtomType = {
-    // chapters with data
-    chapters: Chapter[],
-}
-
-const chaptersAtom = atom<ChaptersAtomType | null>({
+const chaptersAtom = atom<Chapter[]>({
     key: 'chaptersAtom',
-    default: null,
+    default: [],
 })
 
 const activeChapterAtom = atom<string | null>({
