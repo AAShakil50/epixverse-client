@@ -1,0 +1,21 @@
+query GetProjects($limit: Int, $offset: Int) {
+  projects(limit: $limit, offset: $offset) {
+    id
+    title
+    description
+    books {
+      id
+      title
+      chapters {
+        id
+        title
+        scenes {
+          id
+          title
+          index
+          # description omitted
+        }
+      }
+    }
+  }
+}
