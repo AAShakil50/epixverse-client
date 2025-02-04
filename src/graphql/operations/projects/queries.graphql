@@ -19,3 +19,25 @@ query GetProjects($limit: Int, $offset: Int) {
     }
   }
 }
+
+query GetProject($id: ID!) {
+  project(id: $id) {
+    id
+    title
+    description
+    books {
+      id
+      title
+      chapters {
+        id
+        title
+        scenes {
+          id
+          title
+          index
+          # description omitted
+        }
+      }
+    }
+  }
+}
