@@ -1,34 +1,38 @@
 import { Link, useSearchParams } from "react-router-dom";
-import { useProjectOne } from "@/hooks/use-projects";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
 import { ChevronsDown, Pen } from "lucide-react";
-import { Project } from "@/types/project";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { useGetProjectQuery, Project } from "@/graphql/generated/types";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
     const projectId = params.get('id');
 
-    const { project, } = useProjectOne(projectId)
+    const { data } = useGetProjectQuery({
+        variables: { id: projectId! },
+        skip: !projectId
+    });
+
+    if (!data?.project) return <span>No Project Found</span>
 
     return <SidebarProvider>
         <SideNav />
         <main className="w-full">
             <Header />
             <SectionProject
-                project={project} />
+                project={data.project} />
             <SectionBooks
-                project={project} />
+                project={data.project} />
         </main>
     </SidebarProvider>
 }
 
-const SectionProject = ({ project }: { project: Project | null }) => {
+const SectionProject = ({ project }: { project: Project }) => {
     const [titleEditing, setTitleEditing] = useState(false);
     const [title, setTitle] = useState(
         [project?.title ?? "", project?.title ?? ""]
