@@ -35,7 +35,8 @@ const ProjectsPage = () => {
 }
 
 const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
-    return <section className="grid gap-4 grid-cols-4 m-8">
+    return <section className="grid gap-4 
+    grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 m-8">
         {
             projects.map(
                 (project) => (
