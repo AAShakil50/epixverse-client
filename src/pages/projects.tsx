@@ -1,19 +1,20 @@
 import SideNav from "../components/sidenav";
-import { useProjectOne, useProjects } from "@/hooks/use-projects";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Project } from "@/types/project";
+import { Project, useGetProjectsQuery } from "@/graphql/generated/types";
+import { flattenGetProject } from "@/lib/gql-transformers";
 
 const ProjectsPage = () => {
-    const { projects, isLoading, error } = useProjects();
+    const { data, loading, error } = useGetProjectsQuery({
+        pollInterval: 60000 // fetch every 60 secs
+    });
 
-    if (isLoading) return <ProjectPageLoading />;
+    if (loading) return <ProjectPageLoading />;
     if (error) return <ProjectPageError />;
 
     return (
@@ -22,7 +23,7 @@ const ProjectsPage = () => {
             <main className="w-full">
                 <Header />
                 {
-                    projects ? <ProjectsTiles projects={projects} /> :
+                    data?.projects ? <ProjectsTiles projects={data.projects} /> :
                         <section
                             className="flex justify-between items-center m-8">
                             <h1>No Project, Create one.</h1>
@@ -40,7 +41,7 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
                 (project) => (
                     <ProjectDetails
                         key={project.id}
-                        projectId={project.id} />
+                        project={project} />
                 )
             )
         }
@@ -48,13 +49,8 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
 }
 
 
-const ProjectDetails = ({ projectId }: { projectId: string }) => {
-    const { project, books, chapters, scenes, isLoading } = useProjectOne(projectId);
-
-    if (isLoading)
-        return <Skeleton className="w-10 h-2" />;
-
-    if (!project) return null;
+const ProjectDetails = ({ project }: { project: Project }) => {
+    const { books, chapters, scenes } = flattenGetProject(project);
 
     return <Card
         className="flex flex-col h-full josefin-sans">
@@ -88,12 +84,11 @@ const ProjectDetails = ({ projectId }: { projectId: string }) => {
                     count={chapters.length}
                     tooltip={true}
                     elements={
-                        chapters.map(
-                            item =>
-                            ({
-                                title: item.title,
-                                link: `/chapter?id=${item.id}`
-                            })
+                        chapters.map(item =>
+                        ({
+                            title: item.title,
+                            link: `/chapter?id=${item.id}`
+                        })
                         )
                     } />
             }
@@ -104,21 +99,19 @@ const ProjectDetails = ({ projectId }: { projectId: string }) => {
                     count={scenes.length}
                     tooltip={false}
                     elements={
-                        scenes.map(
-                            item =>
-                            ({
-                                title: item.title,
-                                link: `/scene?id=${item.id}`
-                            })
+                        scenes.map((item, index) =>
+                        ({
+                            title: item.title ?? `Scene ${index}`,
+                            link: `/scene?id=${item.id}`
+                        })
                         )
-                    }
-                />
+                    } />
             }
         </CardContent>
         <CardFooter
             className="mt-auto">
             <Link
-                to={`/project?id=${projectId}`}
+                to={`/project?id=${project.id}`}
                 className=" w-full kanit-400">
                 <Button
                     role="link"
@@ -158,15 +151,24 @@ const ElementsSpan = ({ title, count, tooltip, elements }: ElementsSpanType) => 
                     <TooltipContent
                         className="flex flex-row gap-2">
                         {
-                            elements.map((item, index) =>
+                            elements.slice(0, 3).map((item, index) =>
                                 <Link
                                     key={index}
                                     to={item.link}>
                                     <span
-                                        className="border-b-2 border-dotted border-gray-400"
-                                    >{item.title}</span>
+                                        className="border-b-2 border-dotted border-gray-400">
+                                        {item.title}
+                                    </span>
                                 </Link>
                             )
+
+                        }
+                        {
+                            (elements.length > 3) &&
+                            <span
+                                className="font-semibold">
+                                & {elements.length - 3} more
+                            </span>
                         }
                     </TooltipContent>
                 }
