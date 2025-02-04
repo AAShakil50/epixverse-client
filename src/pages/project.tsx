@@ -2,12 +2,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
-import { ChevronsDown, Pen } from "lucide-react";
+import { ChevronDown, Pen } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
-import { useGetProjectQuery, Project } from "@/graphql/generated/types";
+import { Badge } from "@/components/ui/badge";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -27,7 +28,7 @@ const ProjectPage = () => {
             <SectionProject
                 project={data.project} />
             <SectionBooks
-                project={data.project} />
+                books={data.project.books} />
         </main>
     </SidebarProvider>
 }
@@ -120,30 +121,62 @@ const SectionProject = ({ project }: { project: Project }) => {
     </section>
 }
 
-const SectionBooks = ({ project }: { project: Project | null }) => {
-    if(!project) return null;
-
-    return <section className="m-4 p-4 mt-8">
-        <Collapsible
-            defaultOpen
-            className="group/collapsible w-full">
-            <CollapsibleTrigger asChild>
-                <div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="px-4 py-5 w-full flex justify-between
-                        text-2xl font-semibold bg-slate-100 rounded-none">
-                        Books <ChevronsDown size={18} />
-                    </Button>
-                </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent
-                className="p-4 border-l-2">
-                Content here
-            </CollapsibleContent>
-        </Collapsible>
+const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
+    if (!books) return null;
+    return <section className="m-4 p-4 mt-8
+    grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        {
+            books.map((book) => <SectionBook
+                book={book} />)
+        }
     </section>
+}
+
+const SectionBook = ({ book }: { book: Book }) => {
+    const [open, setOpen] = useState(false);
+
+    return <Collapsible
+        open={open}
+        onOpenChange={setOpen}>
+        <Card
+            key={book.id}>
+            <CardHeader>
+                <CardTitle
+                    className="flex flex-row gap-2 justify-between josefin-sans">{book.title}
+                    <CollapsibleTrigger asChild>
+                        <ChevronDown
+                            className={`${open && '-rotate-180'}
+                        transition-transform`} />
+                    </CollapsibleTrigger>
+                </CardTitle>
+                <CardDescription>{book.description}</CardDescription>
+            </CardHeader>
+            <CardContent
+                className={`${open ? 'opacity-100' : 'opacity-0'}
+                transition-opacity duration-500 kanit-400`}>
+                <CollapsibleContent>
+                    {
+                        book.chapters &&
+                        book.chapters.map(
+                            (chapter) => <ChapterCollapsible
+                                key={chapter.id}
+                                chapter={chapter} />
+                        )
+                    }
+                </CollapsibleContent>
+            </CardContent>
+        </Card>
+    </Collapsible>
+}
+
+const ChapterCollapsible = ({ chapter }: { chapter: Chapter }) => {
+    return <div
+        role="button"
+        className="hover:underline decoration-solid decoration-slate-400
+        w-full flex gap-1 justify-between">
+        {chapter.title}
+        <Badge variant="outline">{chapter.scenes?.length}</Badge>
+    </div>
 }
 
 const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
