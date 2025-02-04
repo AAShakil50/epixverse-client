@@ -2,7 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SideNav from "@/components/sidenav";
 import Header from "@/components/header";
-import { ChevronDown, Pen } from "lucide-react";
+import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
@@ -54,6 +54,14 @@ const SectionProject = ({ project }: { project: Project }) => {
         </section>
 
     return <section className="m-4">
+        <div
+            className="my-8 mx-4 josefin-sans
+                flex flex-row ">
+            <ChevronLeft />
+            <Link to="/projects">
+                <span className="underline text-lg cursor-pointer">Projects</span>
+            </Link>
+        </div>
         <div
             className="mx-4">
             <h1
