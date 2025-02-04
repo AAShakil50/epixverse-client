@@ -8,27 +8,40 @@ import LoadingComponent from './components/loading'
 import HomePage from './pages/home'
 import { RecoilRoot } from 'recoil'
 import { RecoilLogger } from './debug/debug-recoil'
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
+import { API_URL } from './lib/site.configs'
 
 const ProjectsPage = lazy(() => import('./pages/projects'))
 const ProjectPage = lazy(() => import('./pages/project'))
 
+const httpLink = new HttpLink({
+  uri: `${API_URL}/graphql`
+})
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache()
+})
+
 function App() {
   return (
-    <RecoilRoot>
-      <RecoilLogger />
-      <Suspense fallback={<LoadingComponent />}>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/'>
-              <Route index element={<HomePage />} />
-              <Route path='projects' element={<ProjectsPage />} />
-              <Route path='project' element={<ProjectPage />} />
-              <Route path='*' element={<center className='text-4xl font-bold'>404 Not Found</center>} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </Suspense>
-    </RecoilRoot>
+    <ApolloProvider client={client}>
+      <RecoilRoot>
+        <RecoilLogger />
+        <Suspense fallback={<LoadingComponent />}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/'>
+                <Route index element={<HomePage />} />
+                <Route path='projects' element={<ProjectsPage />} />
+                <Route path='project' element={<ProjectPage />} />
+                <Route path='*' element={<center className='text-4xl font-bold'>404 Not Found</center>} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </Suspense>
+      </RecoilRoot>
+    </ApolloProvider>
   )
 }
 
