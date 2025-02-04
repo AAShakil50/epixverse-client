@@ -173,7 +173,7 @@ export type GetProjectQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, title: string, description?: string | null, books?: Array<{ __typename?: 'Book', id: string, title: string, chapters?: Array<{ __typename?: 'Chapter', id: string, title: string, scenes?: Array<{ __typename?: 'Scene', id: string, title?: string | null, index: number }> | null }> | null }> | null } | null };
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', id: string, title: string, description?: string | null, books?: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, chapters?: Array<{ __typename?: 'Chapter', id: string, title: string, scenes?: Array<{ __typename?: 'Scene', id: string, title?: string | null, index: number }> | null }> | null }> | null } | null };
 
 
 export const GetProjectsDocument = gql`
@@ -241,6 +241,7 @@ export const GetProjectDocument = gql`
     books {
       id
       title
+      description
       chapters {
         id
         title

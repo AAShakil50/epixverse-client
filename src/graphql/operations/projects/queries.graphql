@@ -28,6 +28,7 @@ query GetProject($id: ID!) {
     books {
       id
       title
+      description
       chapters {
         id
         title
