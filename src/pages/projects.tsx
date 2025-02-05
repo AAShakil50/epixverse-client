@@ -1,5 +1,3 @@
-import SideNav from "../components/sidenav";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -17,21 +15,16 @@ const ProjectsPage = () => {
     if (loading) return <ProjectPageLoading />;
     if (error) return <ProjectPageError />;
 
-    return (
-        <SidebarProvider>
-            <SideNav />
-            <main className="w-full">
-                <Header />
-                {
-                    data?.projects ? <ProjectsTiles projects={data.projects} /> :
-                        <section
-                            className="flex justify-between items-center m-8">
-                            <h1>No Project, Create one.</h1>
-                        </section>
-                }
-            </main>
-        </SidebarProvider>
-    )
+    return <main className="w-full">
+        <Header />
+        {
+            data?.projects ? <ProjectsTiles projects={data.projects} /> :
+                <section
+                    className="flex justify-between items-center m-8">
+                    <h1>No Project, Create one.</h1>
+                </section>
+        }
+    </main>
 }
 
 const ProjectsTiles = ({ projects }: { projects: Project[] }) => {

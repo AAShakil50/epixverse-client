@@ -1,7 +1,4 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import SideNav from "@/components/sidenav";
-import Header from "@/components/header";
+import { Link, useSearchParams } from "react-router-dom"; import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -21,16 +18,13 @@ const ProjectPage = () => {
 
     if (!data?.project) return <span>No Project Found</span>
 
-    return <SidebarProvider>
-        <SideNav />
-        <main className="w-full">
-            <Header />
-            <SectionProject
-                project={data.project} />
-            <SectionBooks
-                books={data.project.books} />
-        </main>
-    </SidebarProvider>
+    return <main className="w-full">
+        <Header />
+        <SectionProject
+            project={data.project} />
+        <SectionBooks
+            books={data.project.books} />
+    </main>
 }
 
 const SectionProject = ({ project }: { project: Project }) => {
