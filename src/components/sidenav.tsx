@@ -1,17 +1,22 @@
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, useSidebar } from "./ui/sidebar";
-import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu, Shapes, Sprout } from "lucide-react";
+import {
+    Sidebar, SidebarContent, SidebarHeader,
+    SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+    SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
+    useSidebar
+} from "./ui/sidebar";
+import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
-import { memo, ReactElement, useState } from "react";
+import { memo, ReactElement, useEffect, useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { useProjectsAtomized } from "@/hooks/use-projects";
-import { Skeleton } from "./ui/skeleton";
-import { useBooksAtomized } from "@/hooks/use-books";
 import { Badge } from "./ui/badge";
-import { useChaptersAtomized } from "@/hooks/use-chapters";
-import { useScenesAtomized } from "@/hooks/use-scenes";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard";
+import { Book, Chapter, Project, useGetProjectsQuery } from "@/graphql/generated/types";
+import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
+import { useRecoilState } from "recoil";
+import { activeBookAtom } from "@/recoil/atoms/atom-books";
+import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
 
 // type SideNavProps = {
 //     title: string,
@@ -41,12 +46,15 @@ const SideNav = () => {
         }
     })
 
-    const {
-        projects,
-        activeProject,
-        setActiveProject,
-        isLoading,
-    } = useProjectsAtomized();
+    const [activeProject, setActiveProject] = useRecoilState(activeProjectAtom)
+
+    const { data, loading } = useGetProjectsQuery()
+
+    useEffect(() => {
+        if (data?.projects && !activeProject) {
+            setActiveProject(data.projects.length > 0 ? data.projects[0].id : null)
+        }
+    }, [activeProject, data?.projects, setActiveProject])
 
     return <Sidebar
         collapsible="icon">
@@ -67,9 +75,9 @@ const SideNav = () => {
                                                 aria-expanded="true"
                                                 className="w-full justify-between text-sm"
                                                 onClick={() => setOpenPopup(!openPopup)}>
-                                                {isLoading ? "Loading Projects" :
-                                                    (projects && activeProject ?
-                                                        projects.find((project) => project.id === activeProject)?.title :
+                                                {loading ? "Loading Projects" :
+                                                    (data?.projects && activeProject ?
+                                                        data.projects.find((project) => project.id === activeProject)?.title :
                                                         "No Project")
                                                 }
                                                 <ChevronsDown />
@@ -77,14 +85,14 @@ const SideNav = () => {
                                         </PopoverTrigger>
                                         <SideNavToggler />
                                     </div>
-                                    {projects &&
+                                    {data?.projects &&
                                         <PopoverContent
                                             className="p-0 ml-2">
                                             <Command>
                                                 <CommandInput placeholder="Select a project..." />
                                                 <CommandList>
                                                     <CommandGroup>
-                                                        {projects.map((project) => {
+                                                        {data.projects.map((project) => {
                                                             return <CommandItem
                                                                 key={project.id}
                                                                 value={project.title}
@@ -109,23 +117,41 @@ const SideNav = () => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            {activeProject && <>
-                <SideNavBooks />
-                <SideNavChapters />
-                <SideNavScenes />
-                <SideNavElementals />
-            </>}
+            <SideNavContents
+                project={
+                    data?.projects.
+                        find(project => project.id === activeProject)
+                    ?? null
+                } />
         </SidebarContent>
     </Sidebar>
 };
 
-const SideNavBooks = () => {
-    const {
-        books,
-        activeBook,
-        isLoading,
-        error
-    } = useBooksAtomized();
+const SideNavContents = ({ project }: { project: Project | null }) => {
+    const [activeBook] = useRecoilState(activeBookAtom)
+
+    const books = project?.books
+    const chapters = books?.find(book => book.id === activeBook)?.chapters
+
+    if (!project) return null;
+
+    return <>
+        <SideNavBooks
+            books={books ?? null} />
+        <SideNavChapters
+            chapters={chapters ?? null} />
+    </>
+}
+
+const SideNavBooks = ({ books }: { books: Book[] | null }) => {
+    const [activeBook, setActiveBook] = useRecoilState(activeBookAtom)
+
+    useEffect(() => {
+
+        if (books?.length) {
+            setActiveBook(books[0].id)
+        }
+    }, [books, setActiveBook])
 
     if (!books?.length) {
         return null;
@@ -134,20 +160,19 @@ const SideNavBooks = () => {
     return <SideNavSubElements
         title="Books"
         icon={Library}
-        isLoading={isLoading}
-        error={error}
         subElements={books}
         activeElement={activeBook}
     />
 }
 
-const SideNavChapters = () => {
-    const {
-        chapters,
-        activeChapter,
-        isLoading,
-        error
-    } = useChaptersAtomized();
+const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
+    const [activeChapter, setActiveChapter] = useRecoilState(activeChapterAtom)
+
+    useEffect(() => {
+        if (chapters?.length) {
+            setActiveChapter(chapters[0].id)
+        }
+    }, [chapters, setActiveChapter])
 
     if (!chapters?.length) {
         return null;
@@ -156,52 +181,8 @@ const SideNavChapters = () => {
     return <SideNavSubElements
         title="Chapters"
         icon={GalleryVertical}
-        isLoading={isLoading}
-        error={error}
         subElements={chapters}
         activeElement={activeChapter}
-    />
-}
-
-const SideNavScenes = () => {
-    const {
-        scenes,
-        activeScene,
-        isLoading,
-        error
-    } = useScenesAtomized();
-
-    if (!scenes?.length) {
-        return null;
-    }
-
-    return <SideNavSubElements
-        title="Scenes"
-        icon={Sprout}
-        isLoading={isLoading}
-        error={error}
-        subElements={scenes?.map(
-            scene => ({
-                id: scene.id,
-                title: scene.title ? scene.title : `Scene ${scene.index}`
-            })
-        )}
-        activeElement={activeScene}
-    />
-}
-
-// ! Unresolved Elementals Sidenav item
-const SideNavElementals = () => {
-    return <SideNavSubElements
-        title="Elementals"
-        icon={Shapes}
-        isLoading={false}
-        error={null}
-        activeElement={null}
-        subElements={[
-            { id: "498t93438th3", title: "Characters" },
-            { id: "498t989h4545", title: "Scenes" }
-        ]}
     />
 }
 
@@ -263,9 +244,6 @@ const SideNavElements = ({ title, icon: Icon, itemCount, children }: SideNavElem
 type SideNavSubElementsType = {
     title: string,
     icon: LucideIcon,
-    isLoading: boolean
-    // @ts-expect-error error is of any type from SWR
-    error
     subElements: {
         id: string
         title: string
@@ -273,13 +251,9 @@ type SideNavSubElementsType = {
     activeElement: string | null
 }
 
-const SideNavSubElements = ({ title, icon, isLoading, error, subElements, activeElement }
+const SideNavSubElements = ({ title, icon, subElements, activeElement }
     : SideNavSubElementsType) => {
-    if (isLoading) return <SidebarMenuItem>
-        <Skeleton className="w-full rounded-full" />
-    </SidebarMenuItem>
-
-    if (error || !subElements)
+    if (!subElements)
         return <SidebarMenuItem>
             No {title}
         </SidebarMenuItem>
