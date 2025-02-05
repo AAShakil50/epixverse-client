@@ -5,9 +5,12 @@ const RecoilLogger = () => {
     const snapshot = useRecoilSnapshot();
 
     useEffect(() => {
-        console.group("%cRecoild Snapshot Updated / ", 'color: purple' , new Date().getSeconds());
+        console.group("%cRecoild Snapshot Updated / ", 'color: purple', new Date().getSeconds());
         for (const node of snapshot.getNodes_UNSTABLE({ isModified: true })) {
-            console.log(node.key, snapshot.getLoadable(node));
+            console.log(
+                `%c${node.key}: %c${snapshot.getLoadable(node).contents}`,
+                'color: cyan', 'color: lightcoral',
+            );
         }
         console.groupEnd();
     }, [snapshot]);
