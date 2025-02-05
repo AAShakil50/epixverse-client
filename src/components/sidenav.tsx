@@ -17,6 +17,7 @@ import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
 import { useRecoilState } from "recoil";
 import { activeBookAtom } from "@/recoil/atoms/atom-books";
 import { activeChapterAtom } from "@/recoil/atoms/atom-chapters";
+import { useNavigate } from "react-router-dom";
 
 // type SideNavProps = {
 //     title: string,
@@ -144,6 +145,7 @@ const SideNavContents = ({ project }: { project: Project | null }) => {
 }
 
 const SideNavBooks = ({ books }: { books: Book[] | null }) => {
+    const navigate = useNavigate()
     const [activeBook, setActiveBook] = useRecoilState(activeBookAtom)
 
     useEffect(() => {
@@ -163,10 +165,14 @@ const SideNavBooks = ({ books }: { books: Book[] | null }) => {
         subElements={books}
         activeElement={activeBook}
         onSelect={active => setActiveBook(active)}
+        onGo={active => {
+            navigate(`/book/${active}`)
+        }}
     />
 }
 
 const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
+    const navigate = useNavigate()
     const [activeChapter, setActiveChapter] = useRecoilState(activeChapterAtom)
 
     useEffect(() => {
@@ -185,6 +191,10 @@ const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
         subElements={chapters}
         activeElement={activeChapter}
         onSelect={active => setActiveChapter(active)}
+        onGo={active => {
+            setActiveChapter(active)
+            navigate(`/chapter/${active}`)
+        }}
     />
 }
 
@@ -252,9 +262,10 @@ type SideNavSubElementsType = {
     }[] | undefined
     activeElement: string | null,
     onSelect: (activeElement: string) => void
+    onGo: (activeElement: string) => void
 }
 
-const SideNavSubElements = ({ title, icon, subElements, activeElement, onSelect }
+const SideNavSubElements = ({ title, icon, subElements, activeElement, onSelect, onGo }
     : SideNavSubElementsType) => {
     if (!subElements)
         return <SidebarMenuItem>
@@ -273,6 +284,9 @@ const SideNavSubElements = ({ title, icon, subElements, activeElement, onSelect 
                     isActive={subElement.id === activeElement}
                     onSelect={
                         () => onSelect(subElement.id)
+                    }
+                    onGo={
+                        () => onGo(subElement.id)
                     } />
             )}
         </SideNavElements>
@@ -283,14 +297,16 @@ type SideBarNavSubElementType = {
     title: string,
     isActive: boolean,
     onSelect: VoidFunction
+    onGo: VoidFunction
 }
 
-const SideBarNavSubElement = ({ title, isActive, onSelect }: SideBarNavSubElementType) => {
+const SideBarNavSubElement = ({ title, isActive, onSelect, onGo }: SideBarNavSubElementType) => {
     return <SidebarMenuSubItem
         key={title}
-        className="text-sm">
+        className="text-sm select-none">
         <SidebarMenuSubButton
             onClick={onSelect}
+            onDoubleClick={onGo}
             role="button"
             isActive={isActive}
             size="md">
