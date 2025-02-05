@@ -124,23 +124,29 @@ const SectionProject = ({ project }: { project: Project }) => {
 }
 
 const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
-    if (!books) return null;
+    const [opened, setOpened] = useState<string | null>(null);
+
+    if (!books || !books.length) return null;
     return <section className="m-4 p-4 mt-8
     grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {
             books.map((book) => <SectionBook
                 key={book.id}
-                book={book} />)
+                book={book}
+                isOpen={book.id === opened}
+                toggleOpen={
+                    () =>
+                        setOpened(state => state === book.id ? null : book.id)
+                } />)
         }
     </section>
 }
 
-const SectionBook = ({ book }: { book: Book }) => {
-    const [open, setOpen] = useState(false);
-
+const SectionBook = ({ book, isOpen, toggleOpen }:
+    { book: Book, isOpen: boolean, toggleOpen: VoidFunction }) => {
     return <Collapsible
-        open={open}
-        onOpenChange={setOpen}>
+        open={isOpen}
+        onOpenChange={toggleOpen}>
         <Card
             key={book.id}>
             <CardHeader>
@@ -148,14 +154,14 @@ const SectionBook = ({ book }: { book: Book }) => {
                     className="flex flex-row gap-2 justify-between josefin-sans">{book.title}
                     <CollapsibleTrigger asChild>
                         <ChevronDown
-                            className={`${open && '-rotate-180'}
+                            className={`${isOpen && '-rotate-180'}
                         transition-transform`} />
                     </CollapsibleTrigger>
                 </CardTitle>
                 <CardDescription>{book.description}</CardDescription>
             </CardHeader>
             <CardContent
-                className={`${open ? 'opacity-100' : 'opacity-0'}
+                className={`${isOpen ? 'opacity-100' : 'opacity-0'}
                 transition-opacity duration-500 kanit-400`}>
                 <CollapsibleContent>
                     {
