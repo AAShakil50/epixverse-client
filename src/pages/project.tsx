@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,8 +26,8 @@ const ProjectPage = () => {
         my-2 flex flex-row items-center justify-center">
                     <h1>Project not found. Go to&nbsp;
                         <Link
-                        to="/projects"
-                        className="underline">Projects</Link>
+                            to="/projects"
+                            className="underline">Projects</Link>
                     </h1>
                 </section> :
                 <>
@@ -50,6 +50,13 @@ const SectionProject = ({ project }: { project: Project }) => {
     const [desc, setDesc] = useState(
         [project?.description ?? "", project?.description ?? ""]
     ); // [preserved title, alterable title]
+
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (inputRef.current)
+            inputRef.current.focus()
+    })
 
     return <section className="m-4">
         <div
@@ -74,6 +81,7 @@ const SectionProject = ({ project }: { project: Project }) => {
                         {title[0]}
                     </> :
                     <Input
+                        ref={inputRef}
                         value={title[1]}
                         onBlur={() => {
                             setTitleEditing(false);
@@ -104,6 +112,7 @@ const SectionProject = ({ project }: { project: Project }) => {
                         {desc[0]}
                     </> :
                     <Input
+                        ref={inputRef}
                         value={desc[1]}
                         onBlur={() => {
                             setDescEditing(false);
