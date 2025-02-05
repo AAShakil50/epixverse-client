@@ -1,4 +1,5 @@
-import { Link, useSearchParams } from "react-router-dom"; import Header from "@/components/header";
+import { Link, useSearchParams } from "react-router-dom";
+import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -16,14 +17,26 @@ const ProjectPage = () => {
         skip: !projectId
     });
 
-    if (!data?.project) return <span>No Project Found</span>
-
     return <main className="w-full">
         <Header />
-        <SectionProject
-            project={data.project} />
-        <SectionBooks
-            books={data.project.books} />
+        {
+            !data?.project ?
+                <section
+                    className="m-8 text-4xl font-bold josefin-sans 
+        my-2 flex flex-row items-center justify-center">
+                    <h1>Project not found. Go to&nbsp;
+                        <Link
+                        to="/projects"
+                        className="underline">Projects</Link>
+                    </h1>
+                </section> :
+                <>
+                    <SectionProject
+                        project={data.project} />
+                    <SectionBooks
+                        books={data.project.books} />
+                </>
+        }
     </main>
 }
 
@@ -37,15 +50,6 @@ const SectionProject = ({ project }: { project: Project }) => {
     const [desc, setDesc] = useState(
         [project?.description ?? "", project?.description ?? ""]
     ); // [preserved title, alterable title]
-
-    if (!project)
-        return <section
-            className="m-8 text-4xl font-bold josefin-sans 
-                my-2 flex flex-row items-center">
-            <h1>Project not found. Go to
-                <Link to="/projects">Projects</Link>
-            </h1>
-        </section>
 
     return <section className="m-4">
         <div
