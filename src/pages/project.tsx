@@ -1,8 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -41,22 +40,8 @@ const ProjectPage = () => {
 }
 
 const SectionProject = ({ project }: { project: Project }) => {
-    const [titleEditing, setTitleEditing] = useState(false);
-    const [title, setTitle] = useState(
-        [project?.title ?? "", project?.title ?? ""]
-    ); // [preserved title, alterable title]
-
-    const [descEditing, setDescEditing] = useState(false);
-    const [desc, setDesc] = useState(
-        [project?.description ?? "", project?.description ?? ""]
-    ); // [preserved title, alterable title]
-
-    const inputRef = useRef<HTMLInputElement>(null)
-
-    useEffect(() => {
-        if (inputRef.current)
-            inputRef.current.focus()
-    })
+    const [title, setTitle] = useState(project?.title ?? "");
+    const [desc, setDesc] = useState(project?.description ?? "");
 
     return <section className="m-4">
         <div
@@ -72,68 +57,46 @@ const SectionProject = ({ project }: { project: Project }) => {
             <h1
                 className="group text-4xl font-bold josefin-sans text-black
                     my-2 flex flex-row items-center">
-                {!titleEditing ?
-                    <>
-                        <IconEditable
-                            onClick={() => {
-                                setTitleEditing(true)
-                            }} />
-                        {title[0]}
-                    </> :
-                    <Input
-                        ref={inputRef}
-                        value={title[1]}
-                        onBlur={() => {
-                            setTitleEditing(false);
-                            setTitle([title[0], title[0]]);
-                        }}
-                        onChange={(e) => {
-                            setTitle([title[0], e.currentTarget.value])
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                setTitleEditing(false);
-                                setTitle([e.currentTarget.value, e.currentTarget.value]);
-                            } else if (e.key === 'Escape') {
-                                setTitleEditing(false);
-                                setTitle([title[0], title[0]]);
-                            }
-                        }} />
-                }
+                <EditableComp
+                    text={title ?? null}
+                    onChange={(value) => setTitle(value)}
+                />
             </h1>
             <h2
                 className="group text-lg text-gray-400 kanit-400">
-                {!descEditing ?
-                    <>
-                        <IconEditable
-                            onClick={() => {
-                                setDescEditing(true)
-                            }} />
-                        {desc[0]}
-                    </> :
-                    <Input
-                        ref={inputRef}
-                        value={desc[1]}
-                        onBlur={() => {
-                            setDescEditing(false);
-                            setDesc([desc[0], desc[0]]);
-                        }}
-                        onChange={(e) => {
-                            setDesc([desc[0], e.currentTarget.value])
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                setDescEditing(false);
-                                setDesc([e.currentTarget.value, e.currentTarget.value]);
-                            } else if (e.key === 'Escape') {
-                                setDescEditing(false);
-                                setDesc([desc[0], desc[0]]);
-                            }
-                        }} />
-                }
+                <EditableComp
+                    text={desc ?? null}
+                    onChange={(value) => setDesc(value)}
+                 />
             </h2>
         </div>
     </section>
+}
+
+const EditableComp = ({ text, onChange }:
+    { text: string, onChange: (value: string) => void }
+) => {
+    const [draft, setDraft] = useState(text)
+
+    return <span
+        contentEditable
+        suppressContentEditableWarning
+        onChange={(e) => {
+            setDraft(e.currentTarget.textContent ?? "")
+        }}
+        onBlur={() => {
+            setDraft(text)
+        }}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+                onChange(draft ?? "")
+                e.currentTarget.blur()
+            } else if (e.key === 'Escape') {
+                e.currentTarget.blur()
+            }
+        }}>
+        {draft}
+    </span>
 }
 
 const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
