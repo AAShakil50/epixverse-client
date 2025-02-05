@@ -283,6 +283,7 @@ const SideBarNavSubElement = ({ title, isActive }: SideBarNavSubElementType) => 
         key={title}
         className="text-sm">
         <SidebarMenuSubButton
+            role="button"
             isActive={isActive}
             size="md">
             {title}
