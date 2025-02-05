@@ -162,6 +162,7 @@ const SideNavBooks = ({ books }: { books: Book[] | null }) => {
         icon={Library}
         subElements={books}
         activeElement={activeBook}
+        onSelect={active => setActiveBook(active)}
     />
 }
 
@@ -183,6 +184,7 @@ const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
         icon={GalleryVertical}
         subElements={chapters}
         activeElement={activeChapter}
+        onSelect={active => setActiveChapter(active)}
     />
 }
 
@@ -248,10 +250,11 @@ type SideNavSubElementsType = {
         id: string
         title: string
     }[] | undefined
-    activeElement: string | null
+    activeElement: string | null,
+    onSelect: (activeElement: string) => void
 }
 
-const SideNavSubElements = ({ title, icon, subElements, activeElement }
+const SideNavSubElements = ({ title, icon, subElements, activeElement, onSelect }
     : SideNavSubElementsType) => {
     if (!subElements)
         return <SidebarMenuItem>
@@ -267,7 +270,10 @@ const SideNavSubElements = ({ title, icon, subElements, activeElement }
                 <SideBarNavSubElement
                     key={subElement.id}
                     title={subElement.title}
-                    isActive={subElement.id === activeElement} />
+                    isActive={subElement.id === activeElement}
+                    onSelect={
+                        () => onSelect(subElement.id)
+                    } />
             )}
         </SideNavElements>
     </SidebarMenuItem>
@@ -275,14 +281,16 @@ const SideNavSubElements = ({ title, icon, subElements, activeElement }
 
 type SideBarNavSubElementType = {
     title: string,
-    isActive: boolean
+    isActive: boolean,
+    onSelect: VoidFunction
 }
 
-const SideBarNavSubElement = ({ title, isActive }: SideBarNavSubElementType) => {
+const SideBarNavSubElement = ({ title, isActive, onSelect }: SideBarNavSubElementType) => {
     return <SidebarMenuSubItem
         key={title}
         className="text-sm">
         <SidebarMenuSubButton
+            onClick={onSelect}
             role="button"
             isActive={isActive}
             size="md">
