@@ -67,7 +67,7 @@ const SectionProject = ({ project }: { project: Project }) => {
                 <EditableComp
                     text={desc ?? null}
                     onContentChange={(value) => setDesc(value)}
-                 />
+                />
             </h2>
         </div>
     </section>
@@ -78,53 +78,53 @@ const EditableComp = ({ text, onContentChange }:
 ) => {
     const editableRef = useRef<HTMLSpanElement>(null);
     const saveRef = useRef(false);
-  
+
     useEffect(() => {
-      if (editableRef.current && !saveRef.current) {
-        editableRef.current.textContent = text;
-      }
+        if (editableRef.current && !saveRef.current) {
+            editableRef.current.textContent = text;
+        }
     }, [text]);
-  
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        saveRef.current = true;
-        if (editableRef.current) {
-          onContentChange(editableRef.current.textContent || "");
+        if (e.key === "Enter") {
+            e.preventDefault();
+            saveRef.current = true;
+            if (editableRef.current) {
+                onContentChange(editableRef.current.textContent || "");
+            }
+            e.currentTarget.blur();
+        } else if (e.key === "Escape") {
+            // Revert changes on Escape
+            saveRef.current = false;
+            if (editableRef.current) {
+                editableRef.current.textContent = text;
+            }
+            e.currentTarget.blur();
         }
-        e.currentTarget.blur();
-      } else if (e.key === "Escape") {
-        // Revert changes on Escape
-        saveRef.current = false;
-        if (editableRef.current) {
-          editableRef.current.textContent = text;
-        }
-        e.currentTarget.blur();
-      }
     };
-  
+
     const handleBlur = () => {
-      if (!saveRef.current && editableRef.current) {
-        // If not saving, revert to original text.
-        editableRef.current.textContent = text;
-      }
-      saveRef.current = false;
+        if (!saveRef.current && editableRef.current) {
+            // If not saving, revert to original text.
+            editableRef.current.textContent = text;
+        }
+        saveRef.current = false;
     };
-  
+
     return (
-      <span
-        ref={editableRef}
-        contentEditable
-        suppressContentEditableWarning
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
-        style={{
-          display: "inline-block",
-          minWidth: "1em",
-          outline: "none",
-        }}
-      />
-    );  
+        <span
+            ref={editableRef}
+            contentEditable
+            suppressContentEditableWarning
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
+            style={{
+                display: "inline-block",
+                minWidth: "1em",
+                outline: "none",
+            }}
+        />
+    );
 }
 
 const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
