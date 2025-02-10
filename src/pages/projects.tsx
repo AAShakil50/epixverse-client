@@ -1,4 +1,3 @@
-import Header from "@/components/header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Project, useGetProjectsQuery } from "@/graphql/generated/types";
 import { flattenGetProject } from "@/lib/gql-transformers";
 import { motion, Variants } from 'motion/react'
+import { PageLayout } from "@/layouts/page-layout";
 
 const ProjectsPage = () => {
     const { data, loading } = useGetProjectsQuery({
@@ -15,13 +15,12 @@ const ProjectsPage = () => {
 
     if (loading) return <ProjectPageLoading />;
 
-    return <main className="w-full">
-        <Header />
+    return <PageLayout showHeader>
         {
             data?.projects ? <ProjectsTiles projects={data.projects} /> :
                 <ProjectNew />
         }
-    </main>
+    </PageLayout>
 }
 
 const containerVariants: Variants = {

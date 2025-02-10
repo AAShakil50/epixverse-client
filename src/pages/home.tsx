@@ -1,12 +1,11 @@
-import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { PageLayout } from "@/layouts/page-layout";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
 
-  return <main className="w-full">
-    <Header />
+  return <PageLayout showHeader>
     <section
       className="my-4">
       <div
@@ -30,7 +29,7 @@ const HomePage = () => {
         </Link>
       </div>
     </section>
-  </main>
+  </PageLayout>
 }
 
 export default HomePage;

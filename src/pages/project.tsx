@@ -1,5 +1,4 @@
 import { Link, useSearchParams } from "react-router-dom";
-import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
@@ -8,6 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Badge } from "@/components/ui/badge";
 import { motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageLayout } from "@/layouts/page-layout";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -19,17 +19,15 @@ const ProjectPage = () => {
     });
 
     if (loading)
-        return <main className='w-full'>
-            <Header />
+        return <PageLayout showHeader>
             <section
                 className="mx-auto text-center">
                 <Skeleton
                     className="w-full h-20 m-4" />
             </section>
-        </main>
+        </PageLayout>
 
-    return <main className="w-full">
-        <Header />
+    return <PageLayout showHeader>
         {
             !data?.project ?
                 <section
@@ -48,7 +46,7 @@ const ProjectPage = () => {
                         books={data.project.books} />
                 </>
         }
-    </main>
+    </PageLayout>
 }
 
 const SectionProject = ({ project }: { project: Project }) => {
