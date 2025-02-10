@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import Header from "@/components/header";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -59,44 +59,72 @@ const SectionProject = ({ project }: { project: Project }) => {
                     my-2 flex flex-row items-center">
                 <EditableComp
                     text={title ?? null}
-                    onChange={(value) => setTitle(value)}
+                    onContentChange={(value) => setTitle(value)}
                 />
             </h1>
             <h2
                 className="group text-lg text-gray-400 kanit-400">
                 <EditableComp
                     text={desc ?? null}
-                    onChange={(value) => setDesc(value)}
+                    onContentChange={(value) => setDesc(value)}
                  />
             </h2>
         </div>
     </section>
 }
 
-const EditableComp = ({ text, onChange }:
-    { text: string, onChange: (value: string) => void }
+const EditableComp = ({ text, onContentChange }:
+    { text: string, onContentChange: (value: string) => void }
 ) => {
-    const [draft, setDraft] = useState(text)
-
-    return <span
+    const editableRef = useRef<HTMLSpanElement>(null);
+    const saveRef = useRef(false);
+  
+    useEffect(() => {
+      if (editableRef.current && !saveRef.current) {
+        editableRef.current.textContent = text;
+      }
+    }, [text]);
+  
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveRef.current = true;
+        if (editableRef.current) {
+          onContentChange(editableRef.current.textContent || "");
+        }
+        e.currentTarget.blur();
+      } else if (e.key === "Escape") {
+        // Revert changes on Escape
+        saveRef.current = false;
+        if (editableRef.current) {
+          editableRef.current.textContent = text;
+        }
+        e.currentTarget.blur();
+      }
+    };
+  
+    const handleBlur = () => {
+      if (!saveRef.current && editableRef.current) {
+        // If not saving, revert to original text.
+        editableRef.current.textContent = text;
+      }
+      saveRef.current = false;
+    };
+  
+    return (
+      <span
+        ref={editableRef}
         contentEditable
         suppressContentEditableWarning
-        onChange={(e) => {
-            setDraft(e.currentTarget.textContent ?? "")
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        style={{
+          display: "inline-block",
+          minWidth: "1em",
+          outline: "none",
         }}
-        onBlur={() => {
-            setDraft(text)
-        }}
-        onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-                onChange(draft ?? "")
-                e.currentTarget.blur()
-            } else if (e.key === 'Escape') {
-                e.currentTarget.blur()
-            }
-        }}>
-        {draft}
-    </span>
+      />
+    );  
 }
 
 const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
