@@ -6,6 +6,7 @@ import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "motion/react";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -159,23 +160,27 @@ const SectionBook = ({ book, isOpen, toggleOpen }:
                     <CollapsibleTrigger asChild>
                         <ChevronDown
                             className={`${isOpen && '-rotate-180'}
-                        transition-transform`} />
+                            transition-transform`} />
                     </CollapsibleTrigger>
                 </CardTitle>
                 <CardDescription>{book.description}</CardDescription>
             </CardHeader>
             <CardContent
-                className={`${isOpen ? 'opacity-100' : 'opacity-0'}
-                transition-opacity duration-500 kanit-400`}>
+                className={`kanit-400`}>
                 <CollapsibleContent>
-                    {
-                        book.chapters &&
-                        book.chapters.map(
-                            (chapter) => <ChapterCollapsible
-                                key={chapter.id}
-                                chapter={chapter} />
-                        )
-                    }
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1 }}>
+                        {
+                            book.chapters &&
+                            book.chapters.map(
+                                (chapter) => <ChapterCollapsible
+                                    key={chapter.id}
+                                    chapter={chapter} />
+                            )
+                        }
+                    </motion.div>
                 </CollapsibleContent>
             </CardContent>
         </Card>
