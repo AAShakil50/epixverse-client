@@ -6,6 +6,7 @@ import { MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Project, useGetProjectsQuery } from "@/graphql/generated/types";
 import { flattenGetProject } from "@/lib/gql-transformers";
+import { motion, Variants } from 'motion/react'
 
 const ProjectsPage = () => {
     const { data, loading, error } = useGetProjectsQuery({
@@ -27,8 +28,27 @@ const ProjectsPage = () => {
     </main>
 }
 
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.2
+        }
+    }
+}
+
+const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+}
+
 const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
-    return <section className="grid gap-4 
+    return <motion.section
+        variants={containerVariants}
+        initial='hidden'
+        animate='visible'
+        className="grid gap-4 
     grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 m-8">
         {
             projects.map(
@@ -39,82 +59,85 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
                 )
             )
         }
-    </section>
+    </motion.section>
 }
 
 
 const ProjectDetails = ({ project }: { project: Project }) => {
     const { books, chapters, scenes } = flattenGetProject(project);
 
-    return <Card
-        className="flex flex-col h-full josefin-sans">
-        <CardHeader>
-            <CardTitle>{project.title}</CardTitle>
-            <CardDescription
-                className="kanit-400">
-                {project.description}
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            {
-                books &&
-                <ElementsSpan
-                    title="Books"
-                    count={books.length}
-                    tooltip={true}
-                    elements={
-                        books.map(item =>
-                        ({
-                            title: item.title,
-                            link: `/book?id=${item.id}`
-                        })
-                        )
-                    } />
-            }
-            {
-                chapters &&
-                <ElementsSpan
-                    title="Chapters"
-                    count={chapters.length}
-                    tooltip={true}
-                    elements={
-                        chapters.map(item =>
-                        ({
-                            title: item.title,
-                            link: `/chapter?id=${item.id}`
-                        })
-                        )
-                    } />
-            }
-            {
-                scenes &&
-                <ElementsSpan
-                    title="Scenes"
-                    count={scenes.length}
-                    tooltip={false}
-                    elements={
-                        scenes.map((item, index) =>
-                        ({
-                            title: item.title ?? `Scene ${index}`,
-                            link: `/scene?id=${item.id}`
-                        })
-                        )
-                    } />
-            }
-        </CardContent>
-        <CardFooter
-            className="mt-auto">
-            <Link
-                to={`/project?id=${project.id}`}
-                className=" w-full kanit-400">
-                <Button
-                    role="link"
-                    className="w-full">
-                    Expand Project <MoveRight />
-                </Button>
-            </Link>
-        </CardFooter>
-    </Card>
+    return <motion.div
+        variants={cardVariants}>
+        <Card
+            className="flex flex-col h-full josefin-sans">
+            <CardHeader>
+                <CardTitle>{project.title}</CardTitle>
+                <CardDescription
+                    className="kanit-400">
+                    {project.description}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                {
+                    books &&
+                    <ElementsSpan
+                        title="Books"
+                        count={books.length}
+                        tooltip={true}
+                        elements={
+                            books.map(item =>
+                            ({
+                                title: item.title,
+                                link: `/book?id=${item.id}`
+                            })
+                            )
+                        } />
+                }
+                {
+                    chapters &&
+                    <ElementsSpan
+                        title="Chapters"
+                        count={chapters.length}
+                        tooltip={true}
+                        elements={
+                            chapters.map(item =>
+                            ({
+                                title: item.title,
+                                link: `/chapter?id=${item.id}`
+                            })
+                            )
+                        } />
+                }
+                {
+                    scenes &&
+                    <ElementsSpan
+                        title="Scenes"
+                        count={scenes.length}
+                        tooltip={false}
+                        elements={
+                            scenes.map((item, index) =>
+                            ({
+                                title: item.title ?? `Scene ${index}`,
+                                link: `/scene?id=${item.id}`
+                            })
+                            )
+                        } />
+                }
+            </CardContent>
+            <CardFooter
+                className="mt-auto">
+                <Link
+                    to={`/project?id=${project.id}`}
+                    className=" w-full kanit-400">
+                    <Button
+                        role="link"
+                        className="w-full">
+                        Expand Project <MoveRight />
+                    </Button>
+                </Link>
+            </CardFooter>
+        </Card>
+    </motion.div>
 };
 
 type ElementsSpanType = {
