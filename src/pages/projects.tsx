@@ -2,28 +2,24 @@ import Header from "@/components/header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { MoveRight } from "lucide-react";
+import { CirclePlus, MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Project, useGetProjectsQuery } from "@/graphql/generated/types";
 import { flattenGetProject } from "@/lib/gql-transformers";
 import { motion, Variants } from 'motion/react'
 
 const ProjectsPage = () => {
-    const { data, loading, error } = useGetProjectsQuery({
+    const { data, loading } = useGetProjectsQuery({
         pollInterval: 60000 // fetch every 60 secs
     });
 
     if (loading) return <ProjectPageLoading />;
-    if (error) return <ProjectPageError />;
 
     return <main className="w-full">
         <Header />
         {
             data?.projects ? <ProjectsTiles projects={data.projects} /> :
-                <section
-                    className="flex justify-between items-center m-8">
-                    <h1>No Project, Create one.</h1>
-                </section>
+                <ProjectNew />
         }
     </main>
 }
@@ -50,18 +46,38 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
         animate='visible'
         className="grid gap-4 
     grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 m-8">
-        {
-            projects.map(
-                (project) => (
-                    <ProjectDetails
-                        key={project.id}
-                        project={project} />
+        <>
+            {
+                projects.map(
+                    (project) => (
+                        <ProjectDetails
+                            key={project.id}
+                            project={project} />
+                    )
                 )
-            )
-        }
+            }
+            < ProjectNew />
+        </>
     </motion.section>
 }
 
+const ProjectNew = () => {
+    return <motion.div
+        variants={cardVariants}>
+        <Link to='/project/new'>
+            <Card
+                className='h-full josefin-sans flex flex-col'>
+                <CardContent
+                    className='h-full flex-1 flex justify-center items-center'>
+                    <CirclePlus size={100} />
+                </CardContent>
+                <CardFooter>
+                    <span className='mx-auto text-lg'>Add new project</span>
+                </CardFooter>
+            </Card>
+        </Link>
+    </motion.div>
+}
 
 const ProjectDetails = ({ project }: { project: Project }) => {
     const { books, chapters, scenes } = flattenGetProject(project);
