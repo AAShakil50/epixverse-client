@@ -1,20 +1,25 @@
 import Header from "@/components/header"
+import { cn } from "@/lib/utils"
+import { HTMLAttributes } from "react"
 
 type PageLayoutProps = {
     showHeader?: boolean
     header?: React.ReactNode
     children: React.ReactNode
-}
+} & HTMLAttributes<HTMLElement>
 
 const PageLayout: React.FC<PageLayoutProps> = (
     {
         showHeader = true,
         header: HeaderComp = <Header />,
-        children
+        children,
+        className,
+        ...props
     }: PageLayoutProps
 ) => {
     return <main
-        className='w-full'>
+        {...props}
+        className={cn('w-full', className)}>
         {showHeader && HeaderComp}
         {children}
     </main>
