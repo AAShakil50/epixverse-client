@@ -7,15 +7,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "motion/react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
     const projectId = params.get('id');
 
-    const { data } = useGetProjectQuery({
+    const { data, loading } = useGetProjectQuery({
         variables: { id: projectId! },
         skip: !projectId
     });
+
+    if (loading)
+        return <main className='w-full'>
+            <Header />
+            <section
+                className="mx-auto text-center">
+                <Skeleton
+                    className="w-full h-20 m-4" />
+            </section>
+        </main>
 
     return <main className="w-full">
         <Header />
