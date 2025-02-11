@@ -1,9 +1,24 @@
+import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
+import React, { HTMLAttributes } from "react";
 
-const LoadingComponent = () => {
-    return <center className={`flex m-auto`}>
-        <Loader size={48} />
-        <div className={`text-2xl`}>Loading ...</div>
+type LoadingComponentProps = {
+    loadingText?: string
+    loadingSize?: number | string
+    loadingIcon?: React.ReactElement<React.SVGProps<SVGSVGElement>>
+} & HTMLAttributes<HTMLElement>
+
+const LoadingComponent: React.FC<LoadingComponentProps> = (
+    {
+        loadingText = 'Loading ...',
+        loadingSize = 24,
+        loadingIcon = <Loader size={loadingSize} />,
+        className
+    }: LoadingComponentProps
+) => {
+    return <center className={cn('flex m-auto', className)}>
+        {loadingIcon}
+        <div className={`text-2xl`}>{loadingText}</div>
     </center>;
 };
 
