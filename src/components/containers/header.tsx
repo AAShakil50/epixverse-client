@@ -1,28 +1,64 @@
-import { APP_NAME } from "@/lib/site.configs";
-import { Projector, User } from "lucide-react";
-import React from "react";
+import { cn } from "@/lib/utils";
+import React, { HTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+type HeaderProps = HTMLAttributes<HTMLElement>
+
+const Header: React.FC<HeaderProps> = ({
+  className,
+  children
+}) => {
   return (
-    <header className={`josefin-sans w-full p-4
-    flex flex-row justify-between items-center`}>
-      <h1 className={`text-lg font-semibold ml-4`}><Link to={"/"}>{APP_NAME}</Link></h1>
-      <nav className={`mx-4`}>
-        <ul className={`flex space-x-6 text-sm`}>
-          <LinkedItem href="/projects" title="Projects" icon={<Projector size={16} className="-mt-1" />} />
-          <LinkedItem href="/profile" title="Profile" icon={<User size={16} className="-mt-1" />} />
-        </ul>
-      </nav>
+    <header className={cn(`josefin-sans w-full p-4
+    flex flex-row justify-between items-center`, className)}>
+      {children}
     </header>
   );
 }
 
-const LinkedItem = ({ href, title, icon }:
-  { href: string, title: string, icon: React.ReactNode }) => {
-    return <Link className={`flex gap-1 items-center -mt-1`} to={href}>
-      {icon}{title}
-    </Link>
+type HeadingProps = {
+  title: string
+  href: string
+} & HTMLAttributes<HTMLHeadingElement>
+
+const Heading: React.FC<HeadingProps> = ({
+  title,
+  href,
+  className
+}) => {
+  return <h1
+    className={cn('text-lg font-semibold ml-4', className)}>
+    <Link to={href}>{title}</Link>
+  </h1>
 }
 
-export default Header;
+type NavContainerProps = HTMLAttributes<HTMLElement>
+
+const NavContainer: React.FC<NavContainerProps> = ({
+  className,
+  children
+}) => {
+  return <nav className={cn('mx-4', className)}>
+    <ul className={`flex space-x-6 text-sm`}>
+      {children}
+    </ul>
+  </nav>
+}
+
+type NavItemLinkProps = {
+  href: string
+  title: string
+  icon: React.ReactNode
+} & HTMLAttributes<HTMLLinkElement>
+
+const NavItemLink: React.FC<NavItemLinkProps> = (
+  { href, title, icon, className }
+) => {
+  return <Link
+    className={cn('flex gap-1 items-center -mt-1', className)}
+    to={href}>
+    {icon}{title}
+  </Link>
+}
+
+export { Header, Heading, NavContainer, NavItemLink };
