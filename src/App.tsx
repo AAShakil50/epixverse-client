@@ -12,7 +12,7 @@ import { RecoilLogger } from './debug/debug-recoil'
 import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { API_URL } from './lib/site.configs'
 import { SidebarProvider } from './components/ui/sidebar'
-import SideNav from './components/sidenav'
+import SideNav from './components/containers/sidenav'
 
 const ProjectsPage = lazy(() => import('./pages/projects'))
 const ProjectPage = lazy(() => import('./pages/project'))

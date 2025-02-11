@@ -1,4 +1,4 @@
-import Header from "@/components/header"
+import Header from "@/components/containers/header"
 import { cn } from "@/lib/utils"
 import { HTMLAttributes } from "react"
 

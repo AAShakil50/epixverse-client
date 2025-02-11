@@ -3,14 +3,14 @@ import {
     SidebarMenu, SidebarMenuButton, SidebarMenuItem,
     SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem,
     useSidebar
-} from "./ui/sidebar";
+} from '@/components/ui/sidebar';
 import { ChevronsDown, GalleryVertical, Library, LucideIcon, Menu } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { memo, ReactElement, useEffect, useState } from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
-import { Badge } from "./ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard";
 import { Book, Chapter, Project, useGetProjectsQuery } from "@/graphql/generated/types";
 import { activeProjectAtom } from "@/recoil/atoms/atom-projects";
