@@ -5,7 +5,7 @@ import {
   Route,
   Routes
 } from 'react-router-dom'
-import LoadingComponent from './components/loading'
+import LoadingComponent from './components/elements/loading'
 import HomePage from './pages/home'
 import { RecoilRoot } from 'recoil'
 import { RecoilLogger } from './debug/debug-recoil'
