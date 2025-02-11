@@ -22,25 +22,38 @@ const PageLayout: React.FC<PageLayoutProps> = (
     return <main
         {...props}
         className={cn('w-full', className)}>
-        {showHeader && header ? header : <Header>
-            <Heading
-                title={APP_NAME}
-                href='/' />
-            <NavContainer>
-                <NavItemLink
-                    href="/projects"
-                    title="Projects"
-                    icon={<Projector size={16}
-                        className="-mt-1" />} />
-                <NavItemLink
-                    href="/profile"
-                    title="Profile"
-                    icon={<User size={16}
-                        className="-mt-1" />} />
-            </NavContainer>
-        </Header>}
+        {showHeader && header ? header : <DefaultHeader />}
         {children}
     </main>
+}
+
+const DefaultHeader = () => {
+    const headerPages = [
+        {
+            title: 'Projects',
+            href: '/projects',
+            icon: <Projector size={16} className="-mt-1" />
+        },
+        {
+            title: "Profile",
+            href: "/profile",
+            icon: <User size={16} className="-mt-1" />
+        }
+    ]
+
+    return <Header>
+        <Heading
+            title={APP_NAME}
+            href='/' />
+        <NavContainer>
+            {
+                headerPages.map((page, index) => <NavItemLink
+                    {...page}
+                    key={index} />
+                )
+            }
+        </NavContainer>
+    </Header>
 }
 
 export { PageLayout }
