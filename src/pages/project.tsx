@@ -1,13 +1,14 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useGetProjectQuery, Project, Book, Chapter } from "@/graphql/generated/types";
+import { Editable } from "@/components/elements/editable";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "motion/react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Book, Chapter, Project, useGetProjectQuery } from "@/graphql/generated/types";
 import { PageLayout } from "@/layouts/page-layout";
+import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
+import { motion } from "motion/react";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
 const ProjectPage = () => {
     const [params] = useSearchParams();
@@ -67,74 +68,20 @@ const SectionProject = ({ project }: { project: Project }) => {
             <h1
                 className="group text-4xl font-bold josefin-sans text-black
                     my-2 flex flex-row items-center">
-                <EditableComp
+                <Editable
                     text={title ?? null}
                     onContentChange={(value) => setTitle(value)}
                 />
             </h1>
             <h2
                 className="group text-lg text-gray-400 kanit-400">
-                <EditableComp
+                <Editable
                     text={desc ?? null}
                     onContentChange={(value) => setDesc(value)}
                 />
             </h2>
         </div>
     </section>
-}
-
-const EditableComp = ({ text, onContentChange }:
-    { text: string, onContentChange: (value: string) => void }
-) => {
-    const editableRef = useRef<HTMLSpanElement>(null);
-    const saveRef = useRef(false);
-
-    useEffect(() => {
-        if (editableRef.current && !saveRef.current) {
-            editableRef.current.textContent = text;
-        }
-    }, [text]);
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            saveRef.current = true;
-            if (editableRef.current) {
-                onContentChange(editableRef.current.textContent || "");
-            }
-            e.currentTarget.blur();
-        } else if (e.key === "Escape") {
-            // Revert changes on Escape
-            saveRef.current = false;
-            if (editableRef.current) {
-                editableRef.current.textContent = text;
-            }
-            e.currentTarget.blur();
-        }
-    };
-
-    const handleBlur = () => {
-        if (!saveRef.current && editableRef.current) {
-            // If not saving, revert to original text.
-            editableRef.current.textContent = text;
-        }
-        saveRef.current = false;
-    };
-
-    return (
-        <span
-            ref={editableRef}
-            contentEditable
-            suppressContentEditableWarning
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            style={{
-                display: "inline-block",
-                minWidth: "1em",
-                outline: "none",
-            }}
-        />
-    );
 }
 
 const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
