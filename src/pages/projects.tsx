@@ -45,18 +45,16 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
         animate='visible'
         className="grid gap-4 
     grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 m-8">
-        <>
-            {
-                projects.map(
-                    (project) => (
-                        <ProjectDetails
-                            key={project.id}
-                            project={project} />
-                    )
+        {
+            projects.map(
+                (project) => (
+                    <ProjectDetails
+                        key={project.id}
+                        project={project} />
                 )
-            }
-            < ProjectNew />
-        </>
+            )
+        }
+        < ProjectNew />
     </motion.section>
 }
 
