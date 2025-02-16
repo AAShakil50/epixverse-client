@@ -60,6 +60,25 @@ export type EpixVerse = {
   version: Scalars['String']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  addProject: Project;
+  editProject: Project;
+};
+
+
+export type MutationAddProjectArgs = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationEditProjectArgs = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Project = {
   __typename?: 'Project';
   books?: Maybe<Array<Book>>;
@@ -166,7 +185,7 @@ export type GetProjectsQueryVariables = Exact<{
 }>;
 
 
-export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, title: string, description?: string | null, books?: Array<{ __typename?: 'Book', id: string, title: string, chapters?: Array<{ __typename?: 'Chapter', id: string, title: string, scenes?: Array<{ __typename?: 'Scene', id: string, title?: string | null, index: number }> | null }> | null }> | null }> };
+export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, title: string, description?: string | null, books?: Array<{ __typename?: 'Book', id: string, title: string, description?: string | null, chapters?: Array<{ __typename?: 'Chapter', id: string, title: string, scenes?: Array<{ __typename?: 'Scene', id: string, title?: string | null, index: number }> | null }> | null }> | null }> };
 
 export type GetProjectQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -185,6 +204,7 @@ export const GetProjectsDocument = gql`
     books {
       id
       title
+      description
       chapters {
         id
         title

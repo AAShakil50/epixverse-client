@@ -6,6 +6,7 @@ query GetProjects($limit: Int, $offset: Int) {
     books {
       id
       title
+      description
       chapters {
         id
         title
