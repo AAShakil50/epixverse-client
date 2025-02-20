@@ -18,7 +18,6 @@ import {
   Chapter,
   Project,
   useGetProjectQuery,
-  useGetProjectsQuery,
 } from "@/graphql/generated/types";
 import { useProjectByBookID } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
