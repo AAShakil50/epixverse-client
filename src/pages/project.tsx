@@ -18,21 +18,42 @@ import {
   Chapter,
   Project,
   useGetProjectQuery,
+  useGetProjectsQuery,
 } from "@/graphql/generated/types";
+import { useProjectByBookID } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-const ProjectPage = () => {
-  const [params] = useSearchParams();
-  const projectId = params.get("id");
+type ProjectPageProps = {
+  landing: "project" | "book" | "chapter";
+};
 
+const getProjectByID = (projectId: string | null) => {
   const { data, loading } = useGetProjectQuery({
     variables: { id: projectId! },
     skip: !projectId,
   });
+
+  return { project: data?.project, loading };
+};
+
+const getProjectByBook = (bookID: string | null) => {
+  const { data, loading } = useProjectByBookID(bookID);
+
+  return { project: data, loading };
+};
+
+const ProjectPage = ({ landing }: ProjectPageProps) => {
+  const [params] = useSearchParams();
+  const projectId = params.get("id");
+
+  const { project, loading } =
+    landing == "project"
+      ? getProjectByID(projectId)
+      : getProjectByBook(projectId);
 
   if (loading)
     return (
@@ -45,7 +66,7 @@ const ProjectPage = () => {
 
   return (
     <PageLayout showHeader>
-      {!data?.project ? (
+      {!project ? (
         <section
           className="m-8 text-4xl font-bold josefin-sans 
         my-2 flex flex-row items-center justify-center"
@@ -59,8 +80,8 @@ const ProjectPage = () => {
         </section>
       ) : (
         <>
-          <SectionProject project={data.project} />
-          <SectionBooks books={data.project.books} />
+          <SectionProject project={project} />
+          <SectionBooks books={project.books} />
         </>
       )}
     </PageLayout>

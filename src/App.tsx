@@ -45,7 +45,15 @@ function App() {
               >
                 <Route index element={<HomePage />} />
                 <Route path="projects" element={<ProjectsPage />} />
-                <Route path="project" element={<ProjectPage />} />
+                <Route
+                  path="project"
+                  element={<ProjectPage landing="project" />}
+                />
+                <Route path="book" element={<ProjectPage landing="book" />} />
+                <Route
+                  path="chapter"
+                  element={<ProjectPage landing="chapter" />}
+                />
                 <Route
                   path="*"
                   element={
