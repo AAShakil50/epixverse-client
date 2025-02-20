@@ -17,7 +17,7 @@ export default [
 
   {
     plugins: { prettier: pluginPrettier },
-    rules: { "prettier/prettier": "error" },
+    rules: { "prettier/prettier": "warn" },
   },
   { rules: { "react/react-in-jsx-scope": "off" } },
 ];
