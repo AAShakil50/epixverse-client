@@ -1,8 +1,8 @@
 interface Book {
-    id: string,
-    title: string,
-    description: string,
-    projectID: string
+  id: string;
+  title: string;
+  description: string;
+  projectID: string;
 }
 
-export type {Book}
+export type { Book };

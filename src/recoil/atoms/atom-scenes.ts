@@ -1,14 +1,14 @@
-import { Scene } from '@/types/scene'
-import { atom } from 'recoil'
+import { Scene } from "@/types/scene";
+import { atom } from "recoil";
 
 const scenesAtom = atom<Scene[]>({
-    key: 'scenesAtom',
-    default: [],
-})
+  key: "scenesAtom",
+  default: [],
+});
 
 const activeSceneAtom = atom<string | null>({
-    key: 'activeSceneAtom',
-    default: null
-})
+  key: "activeSceneAtom",
+  default: null,
+});
 
-export { scenesAtom, activeSceneAtom }
+export { scenesAtom, activeSceneAtom };

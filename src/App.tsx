@@ -1,30 +1,30 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense } from "react";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import LoadingComponent from "./components/elements/loading";
+import HomePage from "./pages/home";
+import { RecoilRoot } from "recoil";
+import { RecoilLogger } from "./debug/debug-recoil";
 import {
-  BrowserRouter,
-  Outlet,
-  Route,
-  Routes
-} from 'react-router-dom'
-import LoadingComponent from './components/elements/loading'
-import HomePage from './pages/home'
-import { RecoilRoot } from 'recoil'
-import { RecoilLogger } from './debug/debug-recoil'
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
-import { API_URL } from './lib/site.configs'
-import { SidebarProvider } from './components/ui/sidebar'
-import SideNav from './components/containers/sidenav'
+  ApolloClient,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { API_URL } from "./lib/site.configs";
+import { SidebarProvider } from "./components/ui/sidebar";
+import SideNav from "./components/containers/sidenav";
 
-const ProjectsPage = lazy(() => import('./pages/projects'))
-const ProjectPage = lazy(() => import('./pages/project'))
+const ProjectsPage = lazy(() => import("./pages/projects"));
+const ProjectPage = lazy(() => import("./pages/project"));
 
 const httpLink = new HttpLink({
-  uri: `${API_URL}/graphql`
-})
+  uri: `${API_URL}/graphql`,
+});
 
 const client = new ApolloClient({
   link: httpLink,
-  cache: new InMemoryCache()
-})
+  cache: new InMemoryCache(),
+});
 
 function App() {
   return (
@@ -34,23 +34,33 @@ function App() {
         <Suspense fallback={<LoadingComponent />}>
           <BrowserRouter>
             <Routes>
-              <Route path='/' element={
-                <SidebarProvider>
-                  <SideNav />
-                  <Outlet />
-                </SidebarProvider>
-              }>
+              <Route
+                path="/"
+                element={
+                  <SidebarProvider>
+                    <SideNav />
+                    <Outlet />
+                  </SidebarProvider>
+                }
+              >
                 <Route index element={<HomePage />} />
-                <Route path='projects' element={<ProjectsPage />} />
-                <Route path='project' element={<ProjectPage />} />
-                <Route path='*' element={<center className='text-4xl font-bold'>404 Not Found</center>} />
+                <Route path="projects" element={<ProjectsPage />} />
+                <Route path="project" element={<ProjectPage />} />
+                <Route
+                  path="*"
+                  element={
+                    <center className="text-4xl font-bold">
+                      404 Not Found
+                    </center>
+                  }
+                />
               </Route>
             </Routes>
           </BrowserRouter>
         </Suspense>
       </RecoilRoot>
     </ApolloProvider>
-  )
+  );
 }
 
-export default App
+export default App;

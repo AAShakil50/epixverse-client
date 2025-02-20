@@ -8,64 +8,64 @@ import { useRecoilState } from "recoil";
 import useSWR from "swr";
 
 export function useScenes(chapterID: string | null) {
-    const [scenes, setScenes] = useState<Scene[] | null>();
+  const [scenes, setScenes] = useState<Scene[] | null>();
 
-    const { isLoading, error } = useSWR<Scene[]>(
-        chapterID ? `${API_URL}/scenes?chapterID=${chapterID}` : null,
-        fetcher,
-        {
-            fallbackData: [],
-            onSuccess(scenesData) {
-                if (scenesData) {
-                    setScenes(scenesData);
-                }
-            },
+  const { isLoading, error } = useSWR<Scene[]>(
+    chapterID ? `${API_URL}/scenes?chapterID=${chapterID}` : null,
+    fetcher,
+    {
+      fallbackData: [],
+      onSuccess(scenesData) {
+        if (scenesData) {
+          setScenes(scenesData);
         }
-    );
+      },
+    },
+  );
 
-    return {
-        scenes,
-        setScenes,
-        isLoading,
-        error
-    }
+  return {
+    scenes,
+    setScenes,
+    isLoading,
+    error,
+  };
 }
 
 export function useScenesAtomized() {
-    const [atomScenes, setAtomScenes] = useRecoilState(scenesAtom)
-    const [activeScene, setActiveScene] = useRecoilState(activeSceneAtom)
+  const [atomScenes, setAtomScenes] = useRecoilState(scenesAtom);
+  const [activeScene, setActiveScene] = useRecoilState(activeSceneAtom);
 
-    const [activeChapter] = useRecoilState(activeChapterAtom)
-    const { scenes, isLoading, error } = useScenes(activeChapter)
-    const isAtomScenesEmpty = !atomScenes.length;
+  const [activeChapter] = useRecoilState(activeChapterAtom);
+  const { scenes, isLoading, error } = useScenes(activeChapter);
+  const isAtomScenesEmpty = !atomScenes.length;
 
-    // change scenes-atom to whatever SWR (scenes) responds
-    useEffect(() => {
-        setAtomScenes(scenes ?? [])
-    }, [scenes, setAtomScenes])
+  // change scenes-atom to whatever SWR (scenes) responds
+  useEffect(() => {
+    setAtomScenes(scenes ?? []);
+  }, [scenes, setAtomScenes]);
 
-    // change active-scene-atom whenever scenes-atom changes
-    useEffect(() => {
-        if (atomScenes.length > 0) {
-            setActiveScene(atomScenes[0].id)
-        } else {
-            setActiveScene(null)
-        }
-    }, [atomScenes, setActiveScene])
+  // change active-scene-atom whenever scenes-atom changes
+  useEffect(() => {
+    if (atomScenes.length > 0) {
+      setActiveScene(atomScenes[0].id);
+    } else {
+      setActiveScene(null);
+    }
+  }, [atomScenes, setActiveScene]);
 
-    // empty scenes-atom whenever active-chapter-atom nulls,
-    // because null active-chapter-atom prevents SWR request
-    useEffect(() => {
-        if (!activeChapter) {
-            setAtomScenes([])
-        }
-    }, [activeChapter, setAtomScenes])
+  // empty scenes-atom whenever active-chapter-atom nulls,
+  // because null active-chapter-atom prevents SWR request
+  useEffect(() => {
+    if (!activeChapter) {
+      setAtomScenes([]);
+    }
+  }, [activeChapter, setAtomScenes]);
 
-    return {
-        scenes: atomScenes,
-        activeScene,
-        setActiveScene,
-        isLoading: isAtomScenesEmpty ? isLoading : false,
-        error
-    };
+  return {
+    scenes: atomScenes,
+    activeScene,
+    setActiveScene,
+    isLoading: isAtomScenesEmpty ? isLoading : false,
+    error,
+  };
 }
