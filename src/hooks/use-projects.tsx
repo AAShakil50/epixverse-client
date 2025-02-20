@@ -1,3 +1,4 @@
+import { useGetProjectsQuery } from "@/graphql/generated/types";
 import { fetcher } from "@/lib/fetcher";
 import { API_URL } from "@/lib/site.configs";
 import { activeProjectAtom, projectsAtom } from "@/recoil/atoms/atom-projects";
@@ -32,7 +33,7 @@ export function useProjects() {
       onSuccess(projectsData) {
         setProjects(projectsData);
       },
-    },
+    }
   );
 
   return {
@@ -82,13 +83,13 @@ export function useProjectOne(projectId: string | null) {
   // Fetch project
   const { data: project, isLoading: isProjectLoading } = useSwr<Project[]>(
     projectId ? `${API_URL}/projects?id=${projectId}` : null,
-    fetcher,
+    fetcher
   );
 
   // Fetch books for this project
   const { data: books, isLoading: isBooksLoading } = useSwr<Book[]>(
     `${API_URL}/books?projectID=${projectId}`,
-    fetcher,
+    fetcher
   );
 
   const [chapters, setChapters] = useState<Chapter[] | null>(null);
@@ -99,12 +100,12 @@ export function useProjectOne(projectId: string | null) {
     const fetchChapters = async () => {
       const chaptersResponses = await Promise.all<Chapter[] | null>(
         books!.map((book) =>
-          fetcher<Chapter[] | null>(`${API_URL}/chapters?bookID=${book.id}`),
-        ),
+          fetcher<Chapter[] | null>(`${API_URL}/chapters?bookID=${book.id}`)
+        )
       );
 
       const validResponses = chaptersResponses.filter(
-        (response) => response != null,
+        (response) => response != null
       );
 
       const finalChapters = validResponses.flat();
@@ -127,12 +128,12 @@ export function useProjectOne(projectId: string | null) {
     const fetchScenes = async () => {
       const scenesResponses = await Promise.all<Scene[] | null>(
         chapters!.map((chapter) =>
-          fetcher<Scene[] | null>(`${API_URL}/scenes?chapterID=${chapter.id}`),
-        ),
+          fetcher<Scene[] | null>(`${API_URL}/scenes?chapterID=${chapter.id}`)
+        )
       );
 
       const validResponses = scenesResponses.filter(
-        (response) => response != null,
+        (response) => response != null
       );
 
       const finalScenes = validResponses.flat();
@@ -157,5 +158,17 @@ export function useProjectOne(projectId: string | null) {
     books: books,
     chapters: chapters,
     scenes: scenes,
+  };
+}
+
+export function useProjectByBookID(bookID: string | null) {
+  const { data, loading } = useGetProjectsQuery();
+
+  return {
+    data:
+      data?.projects.find((project) => {
+        return project.books?.find((book) => book.id === bookID);
+      }) ?? null,
+    loading,
   };
 }
