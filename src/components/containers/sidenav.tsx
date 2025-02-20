@@ -114,7 +114,7 @@ const SideNav = () => {
                           ? "Loading Projects"
                           : data?.projects && activeProject
                             ? data.projects.find(
-                                (project) => project.id === activeProject,
+                                (project) => project.id === activeProject
                               )?.title
                             : "No Project"}
                         <ChevronsDown />
@@ -205,7 +205,7 @@ const SideNavBooks = ({ books }: { books: Book[] | null }) => {
       activeElement={activeBook}
       onSelect={(active) => setActiveBook(active)}
       onGo={(active) => {
-        navigate(`/book/${active}`);
+        navigate(`/book?id=${active}`);
       }}
     />
   );
@@ -234,7 +234,7 @@ const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
       onSelect={(active) => setActiveChapter(active)}
       onGo={(active) => {
         setActiveChapter(active);
-        navigate(`/chapter/${active}`);
+        navigate(`/chapter?id=${active}`);
       }}
     />
   );
