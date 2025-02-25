@@ -19,7 +19,10 @@ import {
   Project,
   useGetProjectQuery,
 } from "@/graphql/generated/types";
-import { useProjectByBookID } from "@/hooks/use-projects";
+import {
+  useProjectByBookID,
+  useProjectByChapterID,
+} from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
@@ -41,6 +44,12 @@ const getProjectByBook = (bookID: string | null) => {
   return { project: data, loading };
 };
 
+const getProjectByChapter = (chapterID: string | null) => {
+  const { data, loading } = useProjectByChapterID(chapterID);
+
+  return { project: data, loading };
+};
+
 const getDataByLanding = ({
   landing,
   resId,
@@ -55,7 +64,7 @@ const getDataByLanding = ({
       case "book":
         return getProjectByBook(resId);
       case "chapter":
-        return { project: null, loading: false };
+        return getProjectByChapter(resId);
       default:
         return { project: null, loading: false };
     }
