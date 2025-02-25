@@ -23,7 +23,7 @@ import { useProjectByBookID } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 const getProjectByID = (projectId: string | null) => {
@@ -110,8 +110,13 @@ const ProjectPage = ({ landing }: ProjectPageProps) => {
 };
 
 const SectionProject = ({ project }: { project: Project }) => {
-  const [title, setTitle] = useState(project?.title ?? "");
-  const [desc, setDesc] = useState(project?.description ?? "");
+  const [title, setTitle] = useState(project.title ?? "");
+  const [desc, setDesc] = useState(project.description ?? "");
+
+  useEffect(() => {
+    setTitle(project.title ?? "");
+    setDesc(project.description ?? "");
+  }, [project]);
 
   return (
     <section className="m-4">
