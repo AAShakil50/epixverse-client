@@ -26,10 +26,6 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
-type ProjectPageProps = {
-  landing: "project" | "book" | "chapter";
-};
-
 const getProjectByID = (projectId: string | null) => {
   const { data, loading } = useGetProjectQuery({
     variables: { id: projectId! },
@@ -45,14 +41,40 @@ const getProjectByBook = (bookID: string | null) => {
   return { project: data, loading };
 };
 
+const getDataByLanding = ({
+  landing,
+  resId,
+}: {
+  landing: TypeLanding;
+  resId: string | null;
+}) => {
+  const { project, loading } = (() => {
+    switch (landing) {
+      case "project":
+        return getProjectByID(resId);
+      case "book":
+        return getProjectByBook(resId);
+      case "chapter":
+        return { project: null, loading: false };
+      default:
+        return { project: null, loading: false };
+    }
+  })();
+
+  return { project, loading };
+};
+
+type TypeLanding = "project" | "book" | "chapter";
+
+type ProjectPageProps = {
+  landing: TypeLanding;
+};
+
 const ProjectPage = ({ landing }: ProjectPageProps) => {
   const [params] = useSearchParams();
-  const projectId = params.get("id");
+  const resId = params.get("id");
 
-  const { project, loading } =
-    landing == "project"
-      ? getProjectByID(projectId)
-      : getProjectByBook(projectId);
+  const { project, loading } = getDataByLanding({ landing, resId });
 
   if (loading)
     return (
