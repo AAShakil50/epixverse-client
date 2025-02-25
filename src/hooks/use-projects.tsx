@@ -172,3 +172,16 @@ export function useProjectByBookID(bookID: string | null) {
     loading,
   };
 }
+
+export function useProjectByChapterID(chapterID: string | null) {
+  const { data, loading } = useGetProjectsQuery();
+
+  return {
+    data: data?.projects.find((project) => {
+      return project.books?.find((book) => {
+        return book.chapters?.find((chapter) => chapter.id === chapterID);
+      });
+    }),
+    loading,
+  };
+}
