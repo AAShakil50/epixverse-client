@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoadingComponent from "./components/elements/loading";
 import HomePage from "./pages/home";
 import { RecoilRoot } from "recoil";
@@ -34,25 +34,43 @@ function App() {
         <Suspense fallback={<LoadingComponent />}>
           <BrowserRouter>
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <SidebarProvider>
-                    <SideNav />
-                    <Outlet />
-                  </SidebarProvider>
-                }
-              >
-                <Route index element={<HomePage />} />
-                <Route path="projects" element={<ProjectsPage />} />
+              <Route path="/">
+                <Route
+                  index
+                  element={
+                    <SidebarProvider>
+                      <SideNav />
+                      <HomePage />
+                    </SidebarProvider>
+                  }
+                />
+                <Route
+                  path="projects"
+                  element={
+                    <SidebarProvider>
+                      <SideNav />
+                      <ProjectsPage />
+                    </SidebarProvider>
+                  }
+                />
                 <Route
                   path="project"
-                  element={<ProjectPage landing="project" />}
+                  element={
+                    <SidebarProvider>
+                      <SideNav />
+                      <ProjectPage landing="project" />
+                    </SidebarProvider>
+                  }
                 />
                 <Route path="book" element={<ProjectPage landing="book" />} />
                 <Route
                   path="chapter"
-                  element={<ProjectPage landing="chapter" />}
+                  element={
+                    <SidebarProvider>
+                      <SideNav />
+                      <ProjectPage landing="chapter" />
+                    </SidebarProvider>
+                  }
                 />
                 <Route
                   path="*"
