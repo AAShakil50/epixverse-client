@@ -26,7 +26,7 @@ import {
 import { PageLayout } from "@/layouts/page-layout";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 const getProjectByID = (projectId: string | null) => {
@@ -82,8 +82,13 @@ type ProjectPageProps = {
 const ProjectPage = ({ landing }: ProjectPageProps) => {
   const [params] = useSearchParams();
   const resId = params.get("id");
+  const targetRef = useRef<HTMLElement>(null);
 
   const { project, loading } = getDataByLanding({ landing, resId });
+
+  useEffect(() => {
+    targetRef.current?.scrollIntoView();
+  }, [landing]);
 
   if (loading)
     return (
@@ -110,77 +115,100 @@ const ProjectPage = ({ landing }: ProjectPageProps) => {
         </section>
       ) : (
         <>
-          <SectionProject project={project} />
-          <SectionBooks books={project.books} />
+          <SectionProject
+            ref={landing === "project" ? targetRef : null}
+            project={project}
+          />
+          <SectionBooks
+            ref={landing === "book" ? targetRef : null}
+            books={project.books}
+          />
         </>
       )}
     </PageLayout>
   );
 };
 
-const SectionProject = ({ project }: { project: Project }) => {
-  const [title, setTitle] = useState(project.title ?? "");
-  const [desc, setDesc] = useState(project.description ?? "");
+type SectionProjectProps = {
+  project: Project;
+};
 
-  useEffect(() => {
-    setTitle(project.title ?? "");
-    setDesc(project.description ?? "");
-  }, [project]);
+const SectionProject = forwardRef<HTMLElement, SectionProjectProps>(
+  ({ project }, ref) => {
+    const [title, setTitle] = useState(project.title ?? "");
+    const [desc, setDesc] = useState(project.description ?? "");
 
-  return (
-    <section className="m-4">
-      <div
-        className="my-8 mx-4 josefin-sans
+    useEffect(() => {
+      setTitle(project.title ?? "");
+      setDesc(project.description ?? "");
+    }, [project]);
+
+    return (
+      <section ref={ref} className="m-4">
+        <div
+          className="my-8 mx-4 josefin-sans
                 flex flex-row "
-      >
-        <ChevronLeft />
-        <Link to="/projects">
-          <span className="underline text-lg cursor-pointer">Projects</span>
-        </Link>
-      </div>
-      <div className="mx-4">
-        <h1
-          className="group text-4xl font-bold josefin-sans text-black
-                    my-2 flex flex-row items-center"
         >
-          <Editable
-            text={title ?? null}
-            onContentChange={(value) => setTitle(value)}
-          />
-        </h1>
-        <h2 className="group text-lg text-gray-400 kanit-400">
-          <Editable
-            text={desc ?? null}
-            onContentChange={(value) => setDesc(value)}
-          />
-        </h2>
-      </div>
-    </section>
-  );
+          <ChevronLeft />
+          <Link to="/projects">
+            <span className="underline text-lg cursor-pointer">Projects</span>
+          </Link>
+        </div>
+        <div className="mx-4">
+          <h1
+            className="group text-4xl font-bold josefin-sans text-black
+                    my-2 flex flex-row items-center"
+          >
+            <Editable
+              text={title ?? null}
+              onContentChange={(value) => setTitle(value)}
+            />
+          </h1>
+          <h2 className="group text-lg text-gray-400 kanit-400">
+            <Editable
+              text={desc ?? null}
+              onContentChange={(value) => setDesc(value)}
+            />
+          </h2>
+        </div>
+      </section>
+    );
+  }
+);
+
+SectionProject.displayName = "SectionProject";
+
+type SectionBooksProps = {
+  books: Book[] | null | undefined;
 };
 
-const SectionBooks = ({ books }: { books: Book[] | null | undefined }) => {
-  const [opened, setOpened] = useState<string | null>(null);
+const SectionBooks = forwardRef<HTMLElement, SectionBooksProps>(
+  ({ books }, ref) => {
+    const [opened, setOpened] = useState<string | null>(null);
 
-  if (!books || !books.length) return null;
-  return (
-    <section
-      className="m-4 p-4 mt-8
+    if (!books || !books.length) return null;
+    return (
+      <section
+        ref={ref}
+        className="m-4 p-4 mt-8
     grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"
-    >
-      {books.map((book) => (
-        <SectionBook
-          key={book.id}
-          book={book}
-          isOpen={book.id === opened}
-          toggleOpen={() =>
-            setOpened((state) => (state === book.id ? null : book.id))
-          }
-        />
-      ))}
-    </section>
-  );
-};
+      >
+        {books.map((book) => (
+          <SectionBook
+            key={book.id}
+            book={book}
+            isOpen={book.id === opened}
+            toggleOpen={() =>
+              setOpened((state) => (state === book.id ? null : book.id))
+            }
+          />
+        ))}
+      </section>
+    );
+  }
+);
+
+SectionBooks.displayName = "SectionBooks";
 
 const SectionBook = ({
   book,
