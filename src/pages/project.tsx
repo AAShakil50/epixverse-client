@@ -1,5 +1,4 @@
 import { Editable } from "@/components/elements/editable";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -24,7 +23,7 @@ import {
   useProjectByChapterID,
 } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
-import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
+import { Book as BookIcon, ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
 import { createContext, forwardRef, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -201,7 +200,7 @@ const SectionBooks = forwardRef<HTMLElement, SectionBooksProps>(
       <section
         ref={ref}
         className="m-4 p-4 mt-8
-    grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4"
+          flex flex-col gap-4"
       >
         {books.map((book) => (
           <SectionBook
@@ -234,15 +233,22 @@ const SectionBook = ({
       <Card key={book.id}>
         <CardHeader>
           <CardTitle className="flex flex-row gap-2 justify-between josefin-sans">
-            {book.title}
+            <span className="flex gap-2">
+              <BookIcon size="0.8em" />
+              {book.title}
+            </span>
             <CollapsibleTrigger asChild>
               <ChevronDown
+                role="button"
                 className={`${isOpen && "-rotate-180"}
                             transition-transform`}
               />
             </CollapsibleTrigger>
           </CardTitle>
-          <CardDescription>{book.description}</CardDescription>
+          <CardDescription className="flex flex-row gap-2 justify-between">
+            {book.description}
+            <Pen size="1em" role="button" className="mx-1" />
+          </CardDescription>
         </CardHeader>
         <CardContent className={`kanit-400`}>
           <CollapsibleContent>
@@ -250,6 +256,7 @@ const SectionBook = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
+              className="flex flex-col gap-2"
             >
               {book.chapters &&
                 book.chapters.map((chapter) => (
@@ -265,13 +272,12 @@ const SectionBook = ({
 
 const ChapterCollapsible = ({ chapter }: { chapter: Chapter }) => {
   return (
-    <div
-      role="button"
-      className="hover:underline decoration-solid decoration-slate-400
-        w-full flex gap-1 justify-between"
-    >
-      {chapter.title}
-      <Badge variant="outline">{chapter.scenes?.length}</Badge>
+    <div className="w-full bg-slate-50 px-4 py-2">
+      <div className="w-full flex gap-1 justify-between">
+        {chapter.title}
+        <Pen size="1em" />
+      </div>
+      <span>{chapter.scenes?.length}</span>
     </div>
   );
 };
