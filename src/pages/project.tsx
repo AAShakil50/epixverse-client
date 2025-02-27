@@ -26,7 +26,7 @@ import {
 import { PageLayout } from "@/layouts/page-layout";
 import { ChevronDown, ChevronLeft, Pen } from "lucide-react";
 import { motion } from "motion/react";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { createContext, forwardRef, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 const getProjectByID = (projectId: string | null) => {
@@ -79,6 +79,14 @@ type ProjectPageProps = {
   landing: TypeLanding;
 };
 
+type ProjectContextType = {
+  activeTab: "books" | "chapters" | "scenes" | "elementals";
+};
+
+const ProjectContext = createContext<ProjectContextType>({
+  activeTab: "books",
+});
+
 const ProjectPage = ({ landing }: ProjectPageProps) => {
   const [params] = useSearchParams();
   const resId = params.get("id");
@@ -100,32 +108,34 @@ const ProjectPage = ({ landing }: ProjectPageProps) => {
     );
 
   return (
-    <PageLayout showHeader>
-      {!project ? (
-        <section
-          className="m-8 text-4xl font-bold josefin-sans 
-        my-2 flex flex-row items-center justify-center"
-        >
-          <h1>
-            Project not found. Go to&nbsp;
-            <Link to="/projects" className="underline">
-              Projects
-            </Link>
-          </h1>
-        </section>
-      ) : (
-        <>
-          <SectionProject
-            ref={landing === "project" ? targetRef : null}
-            project={project}
-          />
-          <SectionBooks
-            ref={landing === "book" ? targetRef : null}
-            books={project.books}
-          />
-        </>
-      )}
-    </PageLayout>
+    <ProjectContext.Provider value={{ activeTab: "books" }}>
+      <PageLayout showHeader>
+        {!project ? (
+          <section
+            className="m-8 text-4xl font-bold josefin-sans
+          my-2 flex flex-row items-center justify-center"
+          >
+            <h1>
+              Project not found. Go to&nbsp;
+              <Link to="/projects" className="underline">
+                Projects
+              </Link>
+            </h1>
+          </section>
+        ) : (
+          <>
+            <SectionProject
+              ref={landing === "project" ? targetRef : null}
+              project={project}
+            />
+            <SectionBooks
+              ref={landing === "book" ? targetRef : null}
+              books={project.books}
+            />
+          </>
+        )}
+      </PageLayout>
+    </ProjectContext.Provider>
   );
 };
 
@@ -266,6 +276,7 @@ const ChapterCollapsible = ({ chapter }: { chapter: Chapter }) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
   return (
     <Pen
