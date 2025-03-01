@@ -239,6 +239,30 @@ export type GetProjectQuery = {
   } | null;
 };
 
+export type GetBookQueryVariables = Exact<{
+  id: Scalars["ID"]["input"];
+}>;
+
+export type GetBookQuery = {
+  __typename?: "Query";
+  book?: {
+    __typename?: "Book";
+    id: string;
+    title: string;
+    chapters?: Array<{
+      __typename?: "Chapter";
+      id: string;
+      title: string;
+      scenes?: Array<{
+        __typename?: "Scene";
+        id: string;
+        title?: string | null;
+        index: number;
+      }> | null;
+    }> | null;
+  } | null;
+};
+
 export const GetProjectsDocument = gql`
   query GetProjects($limit: Int, $offset: Int) {
     projects(limit: $limit, offset: $offset) {
@@ -284,24 +308,24 @@ export function useGetProjectsQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetProjectsQuery,
     GetProjectsQueryVariables
-  >,
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(
     GetProjectsDocument,
-    options,
+    options
   );
 }
 export function useGetProjectsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetProjectsQuery,
     GetProjectsQueryVariables
-  >,
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(
     GetProjectsDocument,
-    options,
+    options
   );
 }
 export function useGetProjectsSuspenseQuery(
@@ -310,7 +334,7 @@ export function useGetProjectsSuspenseQuery(
     | Apollo.SuspenseQueryHookOptions<
         GetProjectsQuery,
         GetProjectsQueryVariables
-      >,
+      >
 ) {
   const options =
     baseOptions === Apollo.skipToken
@@ -318,7 +342,7 @@ export function useGetProjectsSuspenseQuery(
       : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<GetProjectsQuery, GetProjectsQueryVariables>(
     GetProjectsDocument,
-    options,
+    options
   );
 }
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
@@ -380,33 +404,30 @@ export function useGetProjectQuery(
     (
       | { variables: GetProjectQueryVariables; skip?: boolean }
       | { skip: boolean }
-    ),
+    )
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProjectQuery, GetProjectQueryVariables>(
     GetProjectDocument,
-    options,
+    options
   );
 }
 export function useGetProjectLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetProjectQuery,
     GetProjectQueryVariables
-  >,
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(
     GetProjectDocument,
-    options,
+    options
   );
 }
 export function useGetProjectSuspenseQuery(
   baseOptions?:
     | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        GetProjectQuery,
-        GetProjectQueryVariables
-      >,
+    | Apollo.SuspenseQueryHookOptions<GetProjectQuery, GetProjectQueryVariables>
 ) {
   const options =
     baseOptions === Apollo.skipToken
@@ -414,7 +435,7 @@ export function useGetProjectSuspenseQuery(
       : { ...defaultOptions, ...baseOptions };
   return Apollo.useSuspenseQuery<GetProjectQuery, GetProjectQueryVariables>(
     GetProjectDocument,
-    options,
+    options
   );
 }
 export type GetProjectQueryHookResult = ReturnType<typeof useGetProjectQuery>;
@@ -427,4 +448,80 @@ export type GetProjectSuspenseQueryHookResult = ReturnType<
 export type GetProjectQueryResult = Apollo.QueryResult<
   GetProjectQuery,
   GetProjectQueryVariables
+>;
+export const GetBookDocument = gql`
+  query GetBook($id: ID!) {
+    book(id: $id) {
+      id
+      title
+      chapters {
+        id
+        title
+        scenes {
+          id
+          title
+          index
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetBookQuery__
+ *
+ * To run a query within a React component, call `useGetBookQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBookQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBookQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBookQuery(
+  baseOptions: Apollo.QueryHookOptions<GetBookQuery, GetBookQueryVariables> &
+    ({ variables: GetBookQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetBookQuery, GetBookQueryVariables>(
+    GetBookDocument,
+    options
+  );
+}
+export function useGetBookLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetBookQuery, GetBookQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetBookQuery, GetBookQueryVariables>(
+    GetBookDocument,
+    options
+  );
+}
+export function useGetBookSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<GetBookQuery, GetBookQueryVariables>
+) {
+  const options =
+    baseOptions === Apollo.skipToken
+      ? baseOptions
+      : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<GetBookQuery, GetBookQueryVariables>(
+    GetBookDocument,
+    options
+  );
+}
+export type GetBookQueryHookResult = ReturnType<typeof useGetBookQuery>;
+export type GetBookLazyQueryHookResult = ReturnType<typeof useGetBookLazyQuery>;
+export type GetBookSuspenseQueryHookResult = ReturnType<
+  typeof useGetBookSuspenseQuery
+>;
+export type GetBookQueryResult = Apollo.QueryResult<
+  GetBookQuery,
+  GetBookQueryVariables
 >;
