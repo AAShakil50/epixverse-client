@@ -23,7 +23,13 @@ import {
   useProjectByChapterID,
 } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
-import { Book as BookIcon, ChevronDown, ChevronLeft, Pen } from "lucide-react";
+import {
+  Book as BookIcon,
+  ChevronDown,
+  ChevronLeft,
+  Pen,
+  Settings2,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { createContext, forwardRef, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -247,7 +253,7 @@ const SectionBook = ({
           </CardTitle>
           <CardDescription className="flex flex-row gap-2 justify-between">
             {book.description}
-            <Pen size="1em" role="button" className="mx-1" />
+            <Settings2 size="1em" role="button" className="mx-1" />
           </CardDescription>
         </CardHeader>
         <CardContent className={`kanit-400`}>
@@ -259,8 +265,12 @@ const SectionBook = ({
               className="flex flex-col gap-2"
             >
               {book.chapters &&
-                book.chapters.map((chapter) => (
-                  <ChapterCollapsible key={chapter.id} chapter={chapter} />
+                book.chapters.map((chapter, index) => (
+                  <ChapterCollapsible
+                    key={chapter.id}
+                    chapter={chapter}
+                    pos={index + 1}
+                  />
                 ))}
             </motion.div>
           </CollapsibleContent>
@@ -270,14 +280,21 @@ const SectionBook = ({
   );
 };
 
-const ChapterCollapsible = ({ chapter }: { chapter: Chapter }) => {
+const ChapterCollapsible = ({
+  chapter,
+  pos,
+}: {
+  chapter: Chapter;
+  pos: number;
+}) => {
   return (
     <div className="w-full bg-slate-50 px-4 py-2">
-      <div className="w-full flex gap-1 justify-between">
-        {chapter.title}
+      <div className="josefin-sans text-lg w-full flex gap-1 justify-between">
+        <span>
+          {pos}. {chapter.title}
+        </span>
         <Pen size="1em" />
       </div>
-      <span>{chapter.scenes?.length}</span>
     </div>
   );
 };
