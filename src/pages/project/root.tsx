@@ -26,7 +26,7 @@ const ProjectIndex = () => {
       rows={
         data.project.books?.map((item) => {
           return [
-            <span key={item.id}>{item.title}</span>,
+            <b key={item.id}>{item.title}</b>,
             <span key={item.id}>{item.description}</span>,
             <Link key={item.id} to={`/project/book?id=${item.id}`}>
               <ChevronsRight key={item.id} />
