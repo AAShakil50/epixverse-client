@@ -179,7 +179,7 @@ type SectionTableProps = {
 const SectionTable = forwardRef<HTMLElement, SectionTableProps>(
   ({ caption, headings, rows }, ref) => {
     return (
-      <section ref={ref} className="m-4 p-4 mt-8">
+      <section ref={ref} className="m-4 p-4">
         <Table>
           <TableCaption>{caption}</TableCaption>
           <TableHeader>
