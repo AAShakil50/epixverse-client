@@ -205,7 +205,7 @@ const SideNavBooks = ({ books }: { books: Book[] | null }) => {
       activeElement={activeBook}
       onSelect={(active) => setActiveBook(active)}
       onGo={(active) => {
-        navigate(`/book?id=${active}`);
+        navigate(`/project/book?id=${active}`);
       }}
     />
   );
@@ -234,7 +234,7 @@ const SideNavChapters = ({ chapters }: { chapters: Chapter[] | null }) => {
       onSelect={(active) => setActiveChapter(active)}
       onGo={(active) => {
         setActiveChapter(active);
-        navigate(`/chapter?id=${active}`);
+        navigate(`/project/chapter?id=${active}`);
       }}
     />
   );
