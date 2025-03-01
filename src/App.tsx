@@ -13,6 +13,8 @@ import {
 import { API_URL } from "./lib/site.configs";
 import { SidebarProvider } from "./components/ui/sidebar";
 import SideNav from "./components/containers/sidenav";
+import ProjectIndex from "./pages/project/root";
+import ProjectBook from "./pages/project/book";
 
 const ProjectsPage = lazy(() => import("./pages/projects"));
 const ProjectPage = lazy(() => import("./pages/project"));
@@ -53,25 +55,10 @@ function App() {
                     </SidebarProvider>
                   }
                 />
-                <Route
-                  path="project"
-                  element={
-                    <SidebarProvider>
-                      <SideNav />
-                      <ProjectPage landing="project" />
-                    </SidebarProvider>
-                  }
-                />
-                <Route path="book" element={<ProjectPage landing="book" />} />
-                <Route
-                  path="chapter"
-                  element={
-                    <SidebarProvider>
-                      <SideNav />
-                      <ProjectPage landing="chapter" />
-                    </SidebarProvider>
-                  }
-                />
+                <Route path="project" element={<ProjectPage />}>
+                  <Route index element={<ProjectIndex />} />
+                  <Route path="book" element={<ProjectBook />} />
+                </Route>
                 <Route
                   path="*"
                   element={

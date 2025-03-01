@@ -1,38 +1,25 @@
+import SideNav from "@/components/containers/sidenav";
 import { Editable } from "@/components/elements/editable";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Book,
-  Chapter,
-  Project,
-  useGetProjectQuery,
-} from "@/graphql/generated/types";
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useGetProjectQuery } from "@/graphql/generated/types";
 import {
   useProjectByBookID,
   useProjectByChapterID,
 } from "@/hooks/use-projects";
 import { PageLayout } from "@/layouts/page-layout";
-import {
-  Book as BookIcon,
-  ChevronDown,
-  ChevronLeft,
-  Pen,
-  Settings2,
-} from "lucide-react";
-import { motion } from "motion/react";
-import { createContext, forwardRef, useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
+import { forwardRef, useEffect, useState } from "react";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 
 const getProjectByID = (projectId: string | null) => {
   const { data, loading } = useGetProjectQuery({
@@ -80,45 +67,37 @@ const getDataByLanding = ({
 
 type TypeLanding = "project" | "book" | "chapter";
 
-type ProjectPageProps = {
-  landing: TypeLanding;
-};
+const ProjectPage = () => {
+  const landing: TypeLanding = (() => {
+    switch (location.pathname) {
+      case "/project":
+        return "project";
+      case "/project/book":
+        return "book";
+      case "/project/chapter":
+        return "chapter";
+      default:
+        return "project";
+    }
+  })();
 
-type ProjectContextType = {
-  activeTab: "books" | "chapters" | "scenes" | "elementals";
-};
-
-const ProjectContext = createContext<ProjectContextType>({
-  activeTab: "books",
-});
-
-const ProjectPage = ({ landing }: ProjectPageProps) => {
   const [params] = useSearchParams();
   const resId = params.get("id");
-  const targetRef = useRef<HTMLElement>(null);
 
   const { project, loading } = getDataByLanding({ landing, resId });
 
-  useEffect(() => {
-    targetRef.current?.scrollIntoView();
-  }, [landing]);
-
-  if (loading)
-    return (
-      <PageLayout showHeader>
-        <section className="mx-auto text-center">
-          <Skeleton className="w-full h-20 m-4" />
-        </section>
-      </PageLayout>
-    );
-
   return (
-    <ProjectContext.Provider value={{ activeTab: "books" }}>
+    <SidebarProvider>
+      <SideNav />
       <PageLayout showHeader>
-        {!project ? (
+        {loading ? (
+          <section className="mx-auto text-center">
+            <Skeleton className="w-full h-20 m-4" />
+          </section>
+        ) : !project ? (
           <section
             className="m-8 text-4xl font-bold josefin-sans
-          my-2 flex flex-row items-center justify-center"
+            my-2 flex flex-row items-center justify-center"
           >
             <h1>
               Project not found. Go to&nbsp;
@@ -129,34 +108,32 @@ const ProjectPage = ({ landing }: ProjectPageProps) => {
           </section>
         ) : (
           <>
-            <SectionProject
-              ref={landing === "project" ? targetRef : null}
-              project={project}
+            <SectionMeta
+              title={project.title}
+              description={project.description ?? ""}
             />
-            <SectionBooks
-              ref={landing === "book" ? targetRef : null}
-              books={project.books}
-            />
+            <Outlet />
           </>
         )}
       </PageLayout>
-    </ProjectContext.Provider>
+    </SidebarProvider>
   );
 };
 
 type SectionProjectProps = {
-  project: Project;
+  title: string;
+  description: string;
 };
 
-const SectionProject = forwardRef<HTMLElement, SectionProjectProps>(
-  ({ project }, ref) => {
-    const [title, setTitle] = useState(project.title ?? "");
-    const [desc, setDesc] = useState(project.description ?? "");
+const SectionMeta = forwardRef<HTMLElement, SectionProjectProps>(
+  ({ title: projectTitle, description: projectDescription }, ref) => {
+    const [title, setTitle] = useState(projectTitle);
+    const [desc, setDesc] = useState(projectDescription);
 
     useEffect(() => {
-      setTitle(project.title ?? "");
-      setDesc(project.description ?? "");
-    }, [project]);
+      setTitle(projectTitle);
+      setDesc(projectDescription);
+    }, [projectTitle, projectDescription]);
 
     return (
       <section ref={ref} className="m-4">
@@ -191,131 +168,45 @@ const SectionProject = forwardRef<HTMLElement, SectionProjectProps>(
   }
 );
 
-SectionProject.displayName = "SectionProject";
+SectionMeta.displayName = "SectionProject";
 
-type SectionBooksProps = {
-  books: Book[] | null | undefined;
+type SectionTableProps = {
+  caption: string;
+  headings: string[];
+  rows: string[][];
 };
 
-const SectionBooks = forwardRef<HTMLElement, SectionBooksProps>(
-  ({ books }, ref) => {
-    const [opened, setOpened] = useState<string | null>(null);
-
-    if (!books || !books.length) return null;
+const SectionTable = forwardRef<HTMLElement, SectionTableProps>(
+  ({ caption, headings, rows }, ref) => {
     return (
-      <section
-        ref={ref}
-        className="m-4 p-4 mt-8
-          flex flex-col gap-4"
-      >
-        {books.map((book) => (
-          <SectionBook
-            key={book.id}
-            book={book}
-            isOpen={book.id === opened}
-            toggleOpen={() =>
-              setOpened((state) => (state === book.id ? null : book.id))
-            }
-          />
-        ))}
+      <section ref={ref} className="m-4 p-4 mt-8">
+        <Table>
+          <TableCaption>{caption}</TableCaption>
+          <TableHeader>
+            <TableRow>
+              {headings.map((item, index) => {
+                return <TableHead key={index}>{item}</TableHead>;
+              })}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((items, index) => {
+              return (
+                <TableRow key={index}>
+                  {items.map((item, index2) => {
+                    return <TableCell key={index2}>{item}</TableCell>;
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </section>
     );
   }
 );
 
-SectionBooks.displayName = "SectionBooks";
-
-const SectionBook = ({
-  book,
-  isOpen,
-  toggleOpen,
-}: {
-  book: Book;
-  isOpen: boolean;
-  toggleOpen: VoidFunction;
-}) => {
-  return (
-    <Collapsible open={isOpen} onOpenChange={toggleOpen}>
-      <Card key={book.id}>
-        <CardHeader>
-          <CardTitle className="flex flex-row gap-2 justify-between josefin-sans">
-            <span className="flex gap-2">
-              <BookIcon size="0.8em" />
-              {book.title}
-            </span>
-            <CollapsibleTrigger asChild>
-              <ChevronDown
-                role="button"
-                className={`${isOpen && "-rotate-180"}
-                            transition-transform`}
-              />
-            </CollapsibleTrigger>
-          </CardTitle>
-          <CardDescription className="flex flex-row gap-2 justify-between">
-            {book.description}
-            <Settings2 size="1em" role="button" className="mx-1" />
-          </CardDescription>
-        </CardHeader>
-        <CardContent className={`kanit-400`}>
-          <CollapsibleContent>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="flex flex-col gap-2"
-            >
-              {book.chapters &&
-                book.chapters.map((chapter, index) => (
-                  <ChapterCollapsible
-                    key={chapter.id}
-                    chapter={chapter}
-                    pos={index + 1}
-                  />
-                ))}
-            </motion.div>
-          </CollapsibleContent>
-        </CardContent>
-      </Card>
-    </Collapsible>
-  );
-};
-
-const ChapterCollapsible = ({
-  chapter,
-  pos,
-}: {
-  chapter: Chapter;
-  pos: number;
-}) => {
-  return (
-    <div className="w-full bg-slate-50 px-4 py-2">
-      <div className="josefin-sans text-lg w-full flex gap-1 justify-between">
-        <span>
-          {pos}. {chapter.title}
-        </span>
-        <Pen size="1em" />
-      </div>
-    </div>
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const IconEditable = ({ onClick }: { onClick: VoidFunction }) => {
-  return (
-    <Pen
-      role="button"
-      size="0.7em"
-      onClick={() => onClick()}
-      className={`
-            mr-1
-            opacity-0 hidden
-            group-hover:inline group-hover:opacity-100
-            group-hover-within:inline group-hover-within:opacity-100
-            transition-all
-            duration-500`}
-      style={{ marginRight: "0.22em" }}
-    />
-  );
-};
+SectionTable.displayName = "SectionBooks";
 
 export default ProjectPage;
+export { SectionTable };
