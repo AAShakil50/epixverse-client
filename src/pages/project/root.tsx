@@ -1,13 +1,30 @@
+import { useSearchParams } from "react-router-dom";
 import { SectionTable } from "../project";
+import { useGetProjectQuery } from "@/graphql/generated/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProjectIndex = () => {
-  return (
+  const [params] = useSearchParams();
+  const resId = params.get("id");
+
+  const { data, loading } = useGetProjectQuery({
+    variables: {
+      id: resId!,
+    },
+    skip: !resId,
+  });
+
+  return loading ? (
+    <Skeleton />
+  ) : !data?.project ? (
+    <span>Not found</span>
+  ) : (
     <SectionTable
       caption="List of Books"
       headings={["Title", "Description", "Items"]}
       rows={[
-        ["nfwoie", "foi", "noerf"],
-        ["hferf", "fierf", "foerif"],
+        data.project.books?.map((item) => item.title) ?? [],
+        data.project.books?.map((item) => item.description ?? "") ?? [],
       ]}
     />
   );
