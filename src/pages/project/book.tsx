@@ -5,10 +5,7 @@ const ProjectBook = () => {
     <SectionTable
       caption="List of Chapters"
       headings={["Title", "Description", "Items"]}
-      rows={[
-        ["nfwoie", "foi", "noerf"],
-        ["hferf", "fierf", "foerif"],
-      ]}
+      rows={[]}
     />
   );
 };
