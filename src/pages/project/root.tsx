@@ -3,6 +3,14 @@ import { useGetProjectQuery } from "@/graphql/generated/types";
 import { ChevronsRight } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { SectionTable } from "../project";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const ProjectIndex = () => {
   const [params] = useSearchParams();
@@ -21,7 +29,19 @@ const ProjectIndex = () => {
     <span>Not found</span>
   ) : (
     <SectionTable
-      caption="List of Books"
+      caption={
+        <Breadcrumb>
+          <BreadcrumbList className="justify-center">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{data.project.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      }
       headings={["Title", "Description", "Expand"]}
       rows={
         data.project.books?.map((item) => {

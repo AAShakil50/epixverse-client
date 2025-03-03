@@ -4,12 +4,21 @@ import { useSearchParams, Link } from "react-router-dom";
 import { SectionTable } from "@/pages/project";
 import { useProjectByBookID } from "@/hooks/use-projects";
 import { useMemo } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const ProjectBook = () => {
   const [params] = useSearchParams();
   const resId = params.get("id");
 
   const { data, loading } = useProjectByBookID(resId);
+
   const project = useMemo(() => {
     if (!data) return null;
     else {
@@ -23,9 +32,13 @@ const ProjectBook = () => {
     }
   }, [data]);
 
+  const book = useMemo(() => {
+    return project?.books.find((book) => book.id === resId) ?? null;
+  }, [project]);
+
   return loading ? (
     <Skeleton />
-  ) : !project?.books ? (
+  ) : !(project && book) ? (
     <span>Not found</span>
   ) : (
     <>
@@ -41,19 +54,35 @@ const ProjectBook = () => {
         </Link>
       </div>
       <SectionTable
-        caption="List of Books"
+        caption={
+          <Breadcrumb>
+            <BreadcrumbList className="justify-center">
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/project?id=${project.id}`}>
+                  {project.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{book.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        }
         headings={["Title", "Expand"]}
         rows={
-          project.books
-            .find((item) => item.id === resId)
-            ?.chapters?.map((item) => {
-              return [
-                <b key={item.id}>{item.title}</b>,
-                <Link key={item.id} to={`/project/chapter?id=${item.id}`}>
-                  <ChevronsRight key={item.id} />
-                </Link>,
-              ];
-            }) ?? []
+          book.chapters?.map((item) => {
+            return [
+              <b key={item.id}>{item.title}</b>,
+              <Link key={item.id} to={`/project/chapter?id=${item.id}`}>
+                <ChevronsRight key={item.id} />
+              </Link>,
+            ];
+          }) ?? []
         }
       />
     </>

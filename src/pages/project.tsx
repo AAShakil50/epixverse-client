@@ -171,7 +171,7 @@ const SectionMeta = forwardRef<HTMLElement, SectionProjectProps>(
 SectionMeta.displayName = "SectionProject";
 
 type SectionTableProps = {
-  caption: string;
+  caption: JSX.Element;
   headings: string[];
   rows: JSX.Element[][];
 };
