@@ -1,5 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronsRight } from "lucide-react";
+import { ChevronsRight } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { SectionTable } from "@/pages/project";
 import { useProjectByBookID } from "@/hooks/use-projects";
@@ -12,6 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Book } from "@/graphql/generated/types";
 
 const ProjectBook = () => {
   const [params] = useSearchParams();
@@ -36,56 +36,64 @@ const ProjectBook = () => {
     return project?.books.find((book) => book.id === resId) ?? null;
   }, [project]);
 
-  return loading ? (
-    <Skeleton />
-  ) : !(project && book) ? (
-    <span>Not found</span>
-  ) : (
-    <>
-      <div
-        className="my-8 mx-8 josefin-sans
-                flex flex-row "
-      >
-        <ChevronLeft />
-        <Link to={`/project?id=${project.id}`}>
-          <span className="underline text-lg cursor-pointer">
-            {project.title}
-          </span>
-        </Link>
-      </div>
-      <SectionTable
-        caption={
-          <Breadcrumb>
-            <BreadcrumbList className="justify-center">
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href={`/project?id=${project.id}`}>
-                  {project.title}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{book.title}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        }
-        headings={["Title", "Expand"]}
-        rows={
-          book.chapters?.map((item) => {
-            return [
-              <b key={item.id}>{item.title}</b>,
-              <Link key={item.id} to={`/project/chapter?id=${item.id}`}>
-                <ChevronsRight key={item.id} />
-              </Link>,
-            ];
-          }) ?? []
-        }
-      />
-    </>
+  return <BookTable loading={loading} project={project} book={book} />;
+};
+
+type BookTableProps = {
+  loading: boolean;
+  project: {
+    id: string;
+    title: string;
+  } | null;
+  book: Book | null;
+};
+
+const BookTable = ({ loading, project, book }: BookTableProps) => {
+  return (
+    <SectionTable
+      caption={
+        <Breadcrumb>
+          <BreadcrumbList className="justify-center">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/projects">Projects</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            {loading ? (
+              <BreadcrumbItem>Loading...</BreadcrumbItem>
+            ) : (
+              <>
+                {project && (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={`/project?id=${project.id}`}>
+                      {project.title}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
+                {book && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{book.title}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+      }
+      headings={["Title", "Expand"]}
+      rows={
+        book?.chapters?.map((item) => {
+          return [
+            <b key={item.id}>{item.title}</b>,
+            <Link key={item.id} to={`/project/chapter?id=${item.id}`}>
+              <ChevronsRight key={item.id} />
+            </Link>,
+          ];
+        }) ?? []
+      }
+    />
   );
 };
 
