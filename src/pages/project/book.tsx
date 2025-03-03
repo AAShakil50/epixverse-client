@@ -3,12 +3,25 @@ import { ChevronLeft, ChevronsRight } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { SectionTable } from "@/pages/project";
 import { useProjectByBookID } from "@/hooks/use-projects";
+import { useMemo } from "react";
 
 const ProjectBook = () => {
   const [params] = useSearchParams();
   const resId = params.get("id");
 
-  const { data: project, loading } = useProjectByBookID(resId);
+  const { data, loading } = useProjectByBookID(resId);
+  const project = useMemo(() => {
+    if (!data) return null;
+    else {
+      const filteredBooks =
+        data.books?.filter((book) => book.id === resId) || [];
+
+      return {
+        ...data,
+        books: filteredBooks,
+      };
+    }
+  }, [data]);
 
   return loading ? (
     <Skeleton />
