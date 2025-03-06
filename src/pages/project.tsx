@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetProjectQuery } from "@/graphql/generated/types";
+import { Project, useGetProjectQuery } from "@/graphql/generated/types";
 import {
   useProjectByBookID,
   useProjectByChapterID,
@@ -67,7 +67,7 @@ const getDataByLanding = ({
 
 type TypeLanding = "project" | "book" | "chapter";
 
-const ProjectPage = () => {
+const ProjectPageContainer = () => {
   const landing: TypeLanding = (() => {
     switch (location.pathname) {
       case "/project":
@@ -86,6 +86,15 @@ const ProjectPage = () => {
 
   const { project, loading } = getDataByLanding({ landing, resId });
 
+  return <ProjectPage project={project || null} loading={loading} />;
+};
+
+type ProjectPageProps = {
+  project: Project | null;
+  loading: boolean;
+};
+
+const ProjectPage = ({ project, loading }: ProjectPageProps) => {
   return (
     <SidebarProvider>
       <SideNav />
@@ -208,5 +217,5 @@ const SectionTable = forwardRef<HTMLElement, SectionTableProps>(
 
 SectionTable.displayName = "SectionBooks";
 
-export default ProjectPage;
+export default ProjectPageContainer;
 export { SectionTable };

@@ -17,7 +17,7 @@ import ProjectIndex from "./pages/project/root";
 import ProjectBook from "./pages/project/book";
 
 const ProjectsPageContainer = lazy(() => import("./pages/projects"));
-const ProjectPage = lazy(() => import("./pages/project"));
+const ProjectPageContainer = lazy(() => import("./pages/project"));
 
 const httpLink = new HttpLink({
   uri: `${API_URL}/graphql`,
@@ -55,7 +55,7 @@ function App() {
                     </SidebarProvider>
                   }
                 />
-                <Route path="project" element={<ProjectPage />}>
+                <Route path="project" element={<ProjectPageContainer />}>
                   <Route index element={<ProjectIndex />} />
                   <Route path="book" element={<ProjectBook />} />
                 </Route>
