@@ -20,20 +20,24 @@ import { flattenGetProject } from "@/lib/gql-transformers";
 import { motion, Variants } from "motion/react";
 import { PageLayout } from "@/layouts/page-layout";
 
-const ProjectsPage = () => {
+const ProjectsPageContainer = () => {
   const { data, loading } = useGetProjectsQuery({
     pollInterval: 60000, // fetch every 60 secs
   });
 
+  return <ProjectsPage projects={data?.projects ?? null} loading={loading} />;
+};
+
+type ProjectsPageProps = {
+  projects: Project[] | null;
+  loading: boolean;
+};
+const ProjectsPage = ({ projects, loading }: ProjectsPageProps) => {
   if (loading) return <ProjectPageLoading />;
 
   return (
     <PageLayout showHeader>
-      {data?.projects ? (
-        <ProjectsTiles projects={data.projects} />
-      ) : (
-        <ProjectNew />
-      )}
+      {projects ? <ProjectsTiles projects={projects} /> : <ProjectNew />}
     </PageLayout>
   );
 };
@@ -215,4 +219,4 @@ const ProjectPageError = () => {
   );
 };
 
-export default ProjectsPage;
+export default ProjectsPageContainer;

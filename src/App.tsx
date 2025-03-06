@@ -16,7 +16,7 @@ import SideNav from "./components/containers/sidenav";
 import ProjectIndex from "./pages/project/root";
 import ProjectBook from "./pages/project/book";
 
-const ProjectsPage = lazy(() => import("./pages/projects"));
+const ProjectsPageContainer = lazy(() => import("./pages/projects"));
 const ProjectPage = lazy(() => import("./pages/project"));
 
 const httpLink = new HttpLink({
@@ -51,7 +51,7 @@ function App() {
                   element={
                     <SidebarProvider>
                       <SideNav />
-                      <ProjectsPage />
+                      <ProjectsPageContainer />
                     </SidebarProvider>
                   }
                 />
