@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import TailwindCSSAnimation from "tailwindcss-animate";
-export default {
+import { Config } from "tailwindcss";
+const config: Config = {
   darkMode: ["class"],
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -22,7 +23,13 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      fontFamily: {
+        josefin: "Josefin_Sans",
+        kanit: ["Kanit", "sans-serif"],
+      },
     },
   },
   plugins: [TailwindCSSAnimation],
 };
+
+export default config;
