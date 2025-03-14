@@ -105,7 +105,7 @@ const ProjectPage = ({ project, loading }: ProjectPageProps) => {
           </section>
         ) : !project ? (
           <section
-            className="m-8 text-4xl font-bold josefin-sans
+            className="m-8 text-4xl font-bold font-josefin
             my-2 flex flex-row items-center justify-center"
           >
             <h1>
@@ -147,7 +147,7 @@ const SectionMeta = forwardRef<HTMLElement, SectionProjectProps>(
     return (
       <section ref={ref} className="m-4">
         <div
-          className="my-8 mx-4 josefin-sans
+          className="my-8 mx-4 font-josefin
                 flex flex-row "
         >
           <ChevronLeft />
@@ -157,7 +157,7 @@ const SectionMeta = forwardRef<HTMLElement, SectionProjectProps>(
         </div>
         <div className="mx-4">
           <h1
-            className="group text-4xl font-bold josefin-sans text-black
+            className="group text-4xl font-bold font-josefin text-black
                     my-2 flex flex-row items-center"
           >
             <Editable
@@ -165,7 +165,7 @@ const SectionMeta = forwardRef<HTMLElement, SectionProjectProps>(
               onContentChange={(value) => setTitle(value)}
             />
           </h1>
-          <h2 className="group text-lg text-gray-400 kanit-400">
+          <h2 className="group text-lg text-gray-400 font-kanit">
             <Editable
               text={desc ?? null}
               onContentChange={(value) => setDesc(value)}

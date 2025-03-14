@@ -78,7 +78,7 @@ const ProjectNew = () => {
   return (
     <motion.div variants={cardVariants}>
       <Link to="/project/new">
-        <Card className="h-full josefin-sans flex flex-col">
+        <Card className="h-full font-josefin flex flex-col">
           <CardContent className="h-full flex-1 flex justify-center items-center">
             <CirclePlus size={100} />
           </CardContent>
@@ -96,10 +96,10 @@ const ProjectDetails = ({ project }: { project: Project }) => {
 
   return (
     <motion.div variants={cardVariants}>
-      <Card className="flex flex-col h-full josefin-sans">
+      <Card className="flex flex-col h-full font-josefin">
         <CardHeader>
           <CardTitle>{project.title}</CardTitle>
-          <CardDescription className="kanit-400">
+          <CardDescription className="font-kanit">
             {project.description}
           </CardDescription>
         </CardHeader>
@@ -139,7 +139,7 @@ const ProjectDetails = ({ project }: { project: Project }) => {
           )}
         </CardContent>
         <CardFooter className="mt-auto">
-          <Link to={`/project?id=${project.id}`} className=" w-full kanit-400">
+          <Link to={`/project?id=${project.id}`} className=" w-full font-kanit">
             <Button role="link" className="w-full">
               Expand Project <MoveRight />
             </Button>
