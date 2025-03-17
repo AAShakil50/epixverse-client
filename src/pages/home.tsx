@@ -9,7 +9,7 @@ const HomePage = () => {
       <section className="my-4">
         <div className="container flex flex-col items-center gap-4 text-center">
           <h1
-            className={`text-4xl font-bold tracking-tighter font-josefin mx-4`}
+            className={`mx-4 font-josefin text-4xl font-bold tracking-tighter`}
           >
             Shape Your Kingdom
           </h1>
@@ -20,7 +20,7 @@ const HomePage = () => {
             <Button
               size="lg"
               role="link"
-              className="gap-4 my-4 px-8 text-lg font-josefin"
+              className="my-4 gap-4 bg-primary px-8 font-josefin text-lg text-slate-800 hover:bg-primary-500"
             >
               <PencilLine /> Lead Your Quill
             </Button>
