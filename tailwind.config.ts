@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 import TailwindCSSAnimation from "tailwindcss-animate";
 import { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
+
 const config: Config = {
   darkMode: ["class"],
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
@@ -12,6 +14,13 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        primary: {
+          ...colors.teal,
+          DEFAULT: colors.teal[400],
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--color-violet-500))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
