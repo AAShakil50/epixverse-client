@@ -19,7 +19,8 @@ const config: Config = {
           DEFAULT: colors.teal[400],
         },
         secondary: {
-          DEFAULT: "hsl(var(--color-violet-500))",
+          ...colors.violet,
+          DEFAULT: colors.violet[500],
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
