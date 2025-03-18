@@ -63,8 +63,7 @@ const ProjectsTiles = ({ projects }: { projects: Project[] }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid gap-4 
-    grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 m-8"
+      className="m-8 grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-5"
     >
       {projects.map((project) => (
         <ProjectDetails key={project.id} project={project} />
@@ -78,8 +77,8 @@ const ProjectNew = () => {
   return (
     <motion.div variants={cardVariants}>
       <Link to="/project/new">
-        <Card className="h-full font-josefin flex flex-col">
-          <CardContent className="h-full flex-1 flex justify-center items-center">
+        <Card className="flex h-full flex-col font-josefin">
+          <CardContent className="flex h-full flex-1 items-center justify-center">
             <CirclePlus size={100} />
           </CardContent>
           <CardFooter>
@@ -96,7 +95,7 @@ const ProjectDetails = ({ project }: { project: Project }) => {
 
   return (
     <motion.div variants={cardVariants}>
-      <Card className="flex flex-col h-full font-josefin">
+      <Card className="flex h-full flex-col font-josefin">
         <CardHeader>
           <CardTitle>{project.title}</CardTitle>
           <CardDescription className="font-kanit">
@@ -139,8 +138,11 @@ const ProjectDetails = ({ project }: { project: Project }) => {
           )}
         </CardContent>
         <CardFooter className="mt-auto">
-          <Link to={`/project?id=${project.id}`} className=" w-full font-kanit">
-            <Button role="link" className="w-full">
+          <Link to={`/project?id=${project.id}`} className="w-full font-kanit">
+            <Button
+              role="link"
+              className="hover:bg-secondary-500 w-full bg-secondary text-black"
+            >
               Expand Project <MoveRight />
             </Button>
           </Link>
@@ -174,8 +176,7 @@ const ElementsSpan = ({
             <div className="">
               {title}:&nbsp;
               <span
-                className={`${tooltip && count > 0 && "border-b-2"}
-                            border-dotted border-gray-400`}
+                className={`${tooltip && count > 0 && "border-b-2"} border-dotted border-gray-400`}
               >
                 {count}
               </span>
@@ -205,7 +206,7 @@ const ElementsSpan = ({
 
 const ProjectPageLoading = () => {
   return (
-    <main className="flex justify-center items-center">
+    <main className="flex items-center justify-center">
       <h1 className="text-4xl">Loading Projects...</h1>
     </main>
   );
@@ -213,7 +214,7 @@ const ProjectPageLoading = () => {
 
 const ProjectPageError = () => {
   return (
-    <main className="flex justify-center items-center text-red-500">
+    <main className="flex items-center justify-center text-red-500">
       <h1 className="text-4xl">Error loading projects. Try reloading.</h1>
     </main>
   );
